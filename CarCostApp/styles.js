@@ -78,6 +78,16 @@ export default StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#f3f3f3',
   },
+  usingDropdown: {
+    height: 35,
+    paddingLeft: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    width: '60%',
+    marginTop: 10,
+    backgroundColor: '#f3f3f3',
+  },
 
   // Footer / confirmation button
 

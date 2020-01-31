@@ -5,20 +5,52 @@ import {
   StyleSheet, 
   Text, 
   View, 
-  TouchableOpacity 
+  TouchableOpacity,
+  Picker,
+  AsyncStorage
 } from 'react-native';
 import styles from './styles';
 
 export default function App() {
-  const [todoInput, setTodoInput] = React.useState([]);
-  const [todos, setTodos] = React.useState([
-    {id: 0, title: "Take out the trash", done: false},
-    {id: 1, title: "Cook dinner", done: false},
-  ]);
+  const [kilom, setKilom] = React.useState([]);
+  const [refulPrice, setRefulPrice] = React.useState([]);
+  const [priceLiter, setPriceLiter] = React.useState([]);
 
   React.useEffect(() => {
     // kappa here
   }, []);
+
+  const _storeData = async (key, data) => {
+    try {
+      console.log(key, data)
+      await AsyncStorage.setItem(key, data);
+      alert('pridal som ty homos')
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  const _displayData = async (key) => {
+    try {
+      const value = AsyncStorage.getItem(key, (err, result) => {
+        var res = JSON.parse(result)
+        console.log(res['kilometers'])
+        alert(res['kilometers'])
+      });
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  function getData(){
+    var data = {
+      kilometers: kilom,
+      fulPrice: refulPrice,
+      literPrice: priceLiter,
+    };
+    var pureData = JSON.stringify(data);
+    return(pureData);
+  }
 
   // const styles = require('./styles');
   return (
@@ -50,36 +82,53 @@ export default function App() {
         <View style={styles.content}>
           <Text style={styles.caption}>Tankovanie</Text>
           <Text style={styles.using}> 
-            Najazdené km. 
+            Najazdené km:
           </Text>
           <TextInput
             style={styles.usingInput}
-            onChangeText={text => onChangeText(text)}
-            value={'Lacko'}
+            defaultValue='100000'
+            onChangeText={text => setKilom(text)}
+            value={kilom}
           />
           <Text style={styles.using}> 
-            Natankované litre 
+            Natankované za (cena):
           </Text>
-          <TextInput
-            style={styles.usingInput}
-            onChangeText={text => onChangeText(text)}
-            value={'Lacko'}
-          />
+          <Picker
+            selectedValue={refulPrice}
+            style={styles.usingDropdown}
+            onValueChange={(itemValue, itemIndex) =>
+              {setRefulPrice(itemValue)}
+            }>
+            <Picker.Item label="5€" value="5" />
+            <Picker.Item label="10€" value="10" />
+            <Picker.Item label="15€" value="15" />
+            <Picker.Item label="20€" value="20" />
+            <Picker.Item label="25€" value="25" />
+            <Picker.Item label="30€" value="30" />
+            <Picker.Item label="35€" value="35" />
+            <Picker.Item label="40€" value="40" />
+          </Picker>
           <Text style={styles.using}> 
-            Cena/liter 
+            Cena/liter:
           </Text>
           <TextInput
             style={styles.usingInput}
-            onChangeText={text => onChangeText(text)}
-            value={'Lacko'}
+            defaultValue='1.'
+            onChangeText={text => setPriceLiter(text)}
+            value={priceLiter}
           />
         </View>
         <View style={styles.footer}>
           <TouchableOpacity
-            onPress={() => alert("Pridal som zaznam")}
+            onPress={() => _storeData('lacko', getData())}
             style={styles.confirmButton}
           >
             <Text style={styles.confirmButtonText}> Pridať záznam </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => _displayData('lacko')}
+          >
+            <Text style={styles.confirmButtonText}> Zobraz záznam </Text>
           </TouchableOpacity>
         </View>
     </View>
