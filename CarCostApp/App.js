@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, AsyncStorage } from 'react-native';
-import styles from './styles';
+import styles from './components/styles/styles';
 import Add from './components/Add';
 import Show from './components/Show';
 
@@ -12,11 +12,13 @@ export default function App() {
   }, []);
 
   function RenderContent(props) {
-    const value = props.loadPage;
-    if (value == 'add') {
-      return <Add />;
-    } else {
-      return <Show />;
+    if(props.loadPage) {
+      const value = props.loadPage;
+      if (value == 'add') {
+        return <Add />;
+      } else {
+        return <Show />;
+      }
     }
   }
 

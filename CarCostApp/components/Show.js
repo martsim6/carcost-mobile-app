@@ -4,7 +4,7 @@ import {
   View,
   AsyncStorage
 } from 'react-native';
-import styles from '../styles';
+import styles from './styles/styleShow';
 
 export default function Show() {
   const [kilom, setKilom] = React.useState([]);
@@ -12,7 +12,7 @@ export default function Show() {
   const [priceLiter, setPriceLiter] = React.useState([]);
 
   React.useEffect(() => {
-    _displayData('lacko');
+    _displayData('lacko0');
   }, []);
 
   const _displayData = async (key) => {
@@ -31,10 +31,10 @@ export default function Show() {
 
 	return(
     <View>
-      <View style={styles.content}>
-        <Text style={styles.using}>Spotreba:  </Text>
-        <Text style={styles.using}>Najazdené kilometre: {kilom} </Text>
-        <Text style={styles.using}>Zaplatený benzín: {refulPrice} </Text>
+      <View style={styles.contentShow}>
+        <Text style={styles.caption}>Spotreba:  </Text>
+        <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kilom}</Text> </Text>
+        <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{refulPrice}</Text></Text>
       </View>
     </View>
 	);
