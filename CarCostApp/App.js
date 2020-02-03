@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Text, View, TouchableOpacity, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import styles from './components/styles/styles';
 import Add from './components/Add';
 import Show from './components/Show';

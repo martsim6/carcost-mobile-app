@@ -11,7 +11,7 @@ import styles from './styles/stylesAdd';
 
 export default function Add() {
   const [kilom, setKilom] = React.useState(100000);
-  const [refulPrice, setRefulPrice] = React.useState(5);
+  const [refulPrice, setRefulPrice] = React.useState(0);
   const [priceLiter, setPriceLiter] = React.useState(1.);
   const [counter, setCounter] = React.useState(0);
 
