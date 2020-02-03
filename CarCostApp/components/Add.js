@@ -33,7 +33,6 @@ export default function Add() {
     try {
       const value = AsyncStorage.getItem(key, (err, result) => {
         var res = JSON.parse(result)
-        console.log(`zobrazujem z displayData ${res}`)
         var new_id = res + 1;
         setCounter(new_id);
       });

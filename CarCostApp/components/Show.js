@@ -10,22 +10,36 @@ export default function Show() {
   const [kilom, setKilom] = React.useState([]);
   const [refulPrice, setRefulPrice] = React.useState([]);
   const [priceLiter, setPriceLiter] = React.useState([]);
+  const [lastId, setLastId] = React.useState([]);
 
   React.useEffect(() => {
-    _displayData('lacko0');
+    getId('id');
   }, []);
 
-  const _displayData = async (key) => {
+  const getNeededData = async (key) => {
     try {
-      const value = AsyncStorage.getItem(key, (err, result) => {
+      const value = await AsyncStorage.getItem(key, (err, result) => {
         var res = JSON.parse(result)
-        console.log(res)
         setKilom(res['kilometers']);
         setRefulPrice(res['fulPrice']);
         setPriceLiter(res['literPrice'])
       });
     } catch (error) {
       alert(error);
+    }
+  }
+
+  const getId = async (key) => {
+    try {
+      const value = AsyncStorage.getItem(key, (err, result) => {
+        var res = JSON.parse(result)
+        console.log(`last Id je: ${res}`)
+        setLastId(res);
+        console.log(`last ID je nastavene na : ${lastId}`);
+        getNeededData(`lacko${res}`);
+      })
+    } catch(err) {
+      console.log(err)
     }
   }
 

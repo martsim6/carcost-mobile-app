@@ -12,14 +12,14 @@ export default function App() {
   }, []);
 
   function RenderContent(props) {
-    if(props.loadPage) {
+    if(slide) {
       const value = props.loadPage;
       if (value == 'add') {
         return <Add />;
       } else {
         return <Show />;
       }
-    }
+    } 
   }
 
   return (
