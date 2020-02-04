@@ -13,5 +13,8 @@ export default StyleSheet.create({
   },
   data: {
     color: '#ff8400',
-  }
+  },
+  confirmButtonText: {
+    color: '#ff8400',
+  },
 });

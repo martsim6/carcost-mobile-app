@@ -45,7 +45,6 @@ export default function Add() {
       kilometers: kilom,
       fulPrice: refulPrice,
       literPrice: priceLiter,
-      saving_id: counter,
     };
     var count = counter + 1;
     setCounter(count)

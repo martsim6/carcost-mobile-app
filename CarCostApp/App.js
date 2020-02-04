@@ -5,7 +5,6 @@ import Add from './components/Add';
 import Show from './components/Show';
 
 export default function App() {
-
   const [slide, setSlide] = React.useState('add');
 
   React.useEffect(() => {
