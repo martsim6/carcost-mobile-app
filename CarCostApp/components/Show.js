@@ -5,6 +5,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import styles from './styles/styleShow';
+import moment from 'moment';
 
 export default function Show() {
   const [kilom, setKilom] = React.useState([]);
@@ -15,16 +16,28 @@ export default function Show() {
   const [lastId, setLastId] = React.useState([]);
 
   const [consumption, setConsum] = React.useState(0);
+  const date = moment(new Date()).format("MMMM");
 
   React.useEffect(() => {
-    getId('id', true);
-    getIdOld('id', false)
-    calculateConsum(refulPrice, priceLiter)
-  }, []);
+    getId('id');
+    calculateConsum(refulPrice, priceLiter);
+    storeData(`store${lastId}`, getSavingData());
+    caluclateAll();
+  }, [refulPrice]);
 
   function calculateDiff(new_val, last_val) {
     var value = new_val - last_val;
     return value;
+  }
+
+  function getSavingData() {
+    var data = {
+      kmTraveled: distanceTraveled(kilomOld, kilom),
+      spent: refulPrice,
+      date: date,
+    }
+    var pureData = JSON.stringify(data);
+    return(pureData);
   }
 
   function calculateConsum(ref_price_old, price_liter) {
@@ -32,7 +45,35 @@ export default function Show() {
     var km = calculateDiff(kilom, kilomOld)
     var consum = parseFloat((volume*100)/km).toFixed(2);
     setConsum(consum);
-    console.log(`nastavujem consum a jeho hodnota je ${consumption}`)
+  }
+
+  function distanceTraveled(oldDist, newDist) {
+    var value = newDist - oldDist;
+    return value;
+  }
+
+  function caluclateAll() {
+    var kmPassed = 0;
+    var spentAll = 0;
+    for(var i=1; i<=lastId; i++) {
+      try {
+        const value = AsyncStorage.getItem(`store${i}`, (err, res) => {
+          var result = JSON.parse(res);
+          console.log(result);
+        });
+      } catch (err) {
+        alert(err);
+      }
+    }
+  }
+  const displayData = async (key) => {
+    try {
+      const value = AsyncStorage.getItem(key, (err, result) => {
+        var res = JSON.parse(result)
+      });
+    } catch (error) {
+      alert(error);
+    }
   }
 
   const getNeededData = (key, bol) => {
@@ -56,29 +97,26 @@ export default function Show() {
       alert(error);
     }
   }
-  const getId = (key, bol) => {
+  const getId = (key) => {
     try {
       const value = AsyncStorage.getItem(key, (err, result) => {
         var res = JSON.parse(result)
-        console.log(`last Id je: ${res}`)
         setLastId(res);
-        console.log(`last ID je nastavene na : ${lastId}`);
-        getNeededData(`lacko${res}`, bol);
+        getNeededData(`lacko${res}`, true);
+        var old_id = res -1;
+        getNeededData(`lacko${old_id}`, false);
       })
     } catch(err) {
       console.log(err)
     }
   }
-  const getIdOld = (key) => {
+
+  const storeData = async (key, data) => {
     try {
-      const value = AsyncStorage.getItem(key, (err, result) => {
-        var res = JSON.parse(result)
-        setLastId(res);
-        var new_id = res -1;
-        getNeededData(`lacko${new_id}`);
-      })
-    } catch(err) {
-      console.log(err)
+      await AsyncStorage.setItem(key, data);
+      alert('pridal som ')
+    } catch (error) {
+      alert(error);
     }
   }
 
