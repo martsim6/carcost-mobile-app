@@ -17,10 +17,9 @@ export default function Add() {
   const [isSet, setIsSet] = React.useState(false);
 
   React.useEffect(() => {
-    console.log('start');
     checkValue();
     // _displayData('id');
-  }, [isSet, checkValue, _displayData]);
+  }, [isSet]);
 
   const _storeData = async (key, data) => {
     try {
@@ -30,7 +29,6 @@ export default function Add() {
       alert(error);
     }
   }
-
   const checkValue = async () => {
     try {
       const value = AsyncStorage.getItem('lacko0', (err, result) => {
@@ -39,6 +37,7 @@ export default function Add() {
           setIsSet(true);
           _displayData('id');
         } else {
+          alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
           setIsSet(false);
         }
       });
@@ -84,7 +83,7 @@ export default function Add() {
           onChangeText={text => setKilom(parseInt(text))}
         />
         { isSet &&
-          <div>
+          <View>
             <Text style={styles.using}>Natankované za (cena):</Text>
             <Picker
               selectedValue={refulPrice}
@@ -112,7 +111,7 @@ export default function Add() {
               defaultValue='1.'
               onChangeText={text => setPriceLiter(text)}
             />
-          </div>
+          </View>
         }
       </View>
       <View style={styles.footer}>

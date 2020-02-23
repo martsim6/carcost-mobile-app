@@ -25,6 +25,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "host.exp.exponent",
+      "versionCode": 1
     }
   }
 }

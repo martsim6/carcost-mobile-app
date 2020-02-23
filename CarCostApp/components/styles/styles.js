@@ -26,7 +26,7 @@ export default StyleSheet.create({
 
   buttonsMenu:{
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
     width: '100%',
   },
   topButtons: {
@@ -35,14 +35,7 @@ export default StyleSheet.create({
     borderBottomColor: "#ff8400",
     borderBottomWidth: 2,
     alignItems: 'center',
-    width: '33%',
-  },
-  topButtonsMiddle: {
-    padding: 20,
-    borderBottomColor: "#ff8400",
-    borderBottomWidth: 2,
-    alignItems: 'center',
-    width: '33%',
+    width: '30%',
   },
   buttonText: {
     fontSize: 15,

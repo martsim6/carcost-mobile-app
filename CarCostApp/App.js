@@ -24,7 +24,6 @@ export default function App() {
       }
     } 
   }
-
   return (
     <View style={styles.container}>
       <View style={styles.statusbar}>
@@ -47,7 +46,7 @@ export default function App() {
             setSlide('show');
             }
           }
-          style={styles.topButtonsMiddle}
+          style={styles.topButtons}
         >
           <Text style={styles.buttonText}>Pozrieť</Text>
         </TouchableOpacity>
