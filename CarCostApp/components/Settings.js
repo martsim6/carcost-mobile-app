@@ -1,19 +1,26 @@
 import React from 'react';
 import { 
-  TextInput, 
-  Platform, 
-  StyleSheet, 
   Text, 
   View, 
   TouchableOpacity,
-  Picker,
-  AsyncStorage
 } from 'react-native';
-import styles from './styles';
+import styles from './styles/styles';
 
 export default function Show() {
 	return(
-
-
+    <View style={styles.content}>
+      <TouchableOpacity
+        onPress={() => {
+          setCounter(0)
+          clearAsyncStorage();
+          checkValue();
+          console.log('zresetoval som')
+          }
+        }
+        style={styles.confirmButton}
+        >
+        <Text style={styles.confirmButtonText}> Reset </Text>
+      </TouchableOpacity>
+    </View>
 	);
 }

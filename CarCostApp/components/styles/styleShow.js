@@ -4,7 +4,6 @@ export default StyleSheet.create({
 	contentShow: {
     marginLeft: 25,
     marginTop: 45,
-    color: '#fff',
   },
   caption: {
     color: "#fff",

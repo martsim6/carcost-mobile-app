@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, AsyncStorage, KeyboardAvoidingView } from
 import styles from './components/styles/styles';
 import Add from './components/Add';
 import Show from './components/Show';
+import Settings from './components/Settings'
 
 export default function App() {
 
@@ -16,8 +17,10 @@ export default function App() {
       const value = props.loadPage;
       if (value == 'add') {
         return <Add />;
-      } else {
+      } else if(value == 'show') {
         return <Show />;
+      } else {
+        return <Settings />;
       }
     } 
   }
@@ -49,7 +52,7 @@ export default function App() {
           <Text style={styles.buttonText}>Pozrieť</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => alert('Nastavujem')}
+          onPress={() => setSlide('settings')}
           style={styles.topButtons}
         >
           <Text style={styles.buttonText}>Nastavenia</Text>

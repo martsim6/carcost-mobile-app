@@ -9,16 +9,27 @@ import moment from 'moment';
 
 export default function Show() {
   const [kilom, setKilom] = React.useState([]);
-  const [refulPrice, setRefulPrice] = React.useState([]);
-  const [priceLiter, setPriceLiter] = React.useState([]);
   const [kilomOld, setKilomOld] = React.useState([]);
+
+  const [priceLiter, setPriceLiter] = React.useState([]);
+  
+  const [refulPrice, setRefulPrice] = React.useState([]);
   const [refulPriceOld, setRefulPriceOld] = React.useState([]);
+
   const [lastId, setLastId] = React.useState([]);
 
+  const [kmTraveled, setKmTraveled] = React.useState([]);
+  const [spentMoney, setSpentMoney] = React.useState([]);
+
+  const [kmPerMonth, setKmPerMonth] = React.useState([]);
+  const [moneyPerMonth, setMoneyPerMonth] = React.useState([]);
+
   const [consumption, setConsum] = React.useState(0);
+
   const date = moment(new Date()).format("MMMM");
 
   React.useEffect(() => {
+    checkValue();
     getId('id');
     calculateConsum(refulPrice, priceLiter);
     storeData(`store${lastId}`, getSavingData());
@@ -55,21 +66,40 @@ export default function Show() {
   function caluclateAll() {
     var kmPassed = 0;
     var spentAll = 0;
+    var kmMonth = 0;
+    var moneyMonth = 0;
     for(var i=1; i<=lastId; i++) {
       try {
         const value = AsyncStorage.getItem(`store${i}`, (err, res) => {
           var result = JSON.parse(res);
-          console.log(result);
+          if(lastId > 0) {
+            kmPassed += parseInt(result["kmTraveled"])
+          }
+          if(date == result['date']) {
+            kmMonth += parseInt(result['kmTraveled'])
+            moneyMonth += parseInt(result['spent'])
+          }
+          spentAll += parseInt(result["spent"])
+         
         });
       } catch (err) {
         alert(err);
       }
     }
+    setKmTraveled(kmPassed);
+    setSpentMoney(spentAll);
+    setKmPerMonth(kmMonth);
+    setMoneyPerMonth(moneyMonth);
   }
-  const displayData = async (key) => {
+  const checkValue = async () => {
     try {
-      const value = AsyncStorage.getItem(key, (err, result) => {
+      const value = AsyncStorage.getItem('store1', (err, result) => {
         var res = JSON.parse(result)
+        if (res) {
+          return true;
+        } else {
+          return false;
+        }
       });
     } catch (error) {
       alert(error);
@@ -114,7 +144,6 @@ export default function Show() {
   const storeData = async (key, data) => {
     try {
       await AsyncStorage.setItem(key, data);
-      alert('pridal som ')
     } catch (error) {
       alert(error);
     }
@@ -123,11 +152,13 @@ export default function Show() {
 	return(
     <View>
       <View style={styles.contentShow}>
-        <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} </Text></Text>
-        <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kilom}</Text> </Text>
-        <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{refulPrice}</Text></Text>
-        <Text style={styles.caption}>Najazdené kilometre stare: <Text style={styles.data}>{kilomOld}</Text> </Text>
-        <Text style={styles.caption}>Zaplatený benzín stare: <Text style={styles.data}>{refulPriceOld}</Text></Text>
+        <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/km</Text></Text>
+        <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmTraveled} km</Text> </Text>
+        <Text style={styles.caption}>Najazdené kilometre v mesiaci: <Text style={styles.data}>{kmPerMonth} km</Text> </Text>
+        <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{distanceTraveled(kilomOld, kilom)} km</Text> </Text>
+        <Text style={styles.caption}>Zaplatený benzín naposledy: <Text style={styles.data}>{refulPrice} €</Text></Text>
+        <Text style={styles.caption}>Zaplatený benzín v mesiaci: <Text style={styles.data}>{moneyPerMonth} €</Text></Text>
+        <Text style={styles.caption}>Zaplatený benzín dokopy: <Text style={styles.data}>{spentMoney} €</Text></Text>
       </View>
     </View>
 	);
