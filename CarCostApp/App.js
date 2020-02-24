@@ -4,6 +4,7 @@ import styles from './components/styles/styles';
 import Add from './components/Add';
 import Show from './components/Show';
 import Settings from './components/Settings'
+import DistanceStore from './components/context/DistanceStore';
 
 export default function App() {
 
@@ -13,16 +14,15 @@ export default function App() {
   }, []);
 
   function RenderContent(props) {
-    if(slide) {
+    if(slide){
       const value = props.loadPage;
-      if (value == 'add') {
-        return <Add />;
-      } else if(value == 'show') {
-        return <Show />;
-      } else {
-        return <Settings />;
-      }
-    } 
+      return (<DistanceStore>
+          {value == 'add' && <Add />}
+          {value == 'show' && <Show />}
+          {value == 'settings' && <Settings />}
+        </DistanceStore>
+      );
+    }
   }
   return (
     <View style={styles.container}>
