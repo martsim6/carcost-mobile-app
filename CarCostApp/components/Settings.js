@@ -17,6 +17,7 @@ export default function Show() {
         onPress={() => {
           clearAsyncStorage();
           alert("Záznamy boli úspešne vymazané!")
+          console.log('vymazané')
           }
         }
         style={styles.confirmButton}

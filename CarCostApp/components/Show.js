@@ -18,7 +18,7 @@ export default function Show() {
   const [refulPrice, setRefulPrice] = React.useState([]);
   const [refulPriceOld, setRefulPriceOld] = React.useState([]);
 
-  const [lastId, setLastId] = React.useState([]);
+  const [lastId, setLastId] = React.useState();
 
   const [kmTraveled, setKmTraveled] = React.useState([]);
   const [spentMoney, setSpentMoney] = React.useState([]);
@@ -31,14 +31,21 @@ export default function Show() {
   const date = moment(new Date()).locale('sk').format("MMMM");
 
   const [showTab, setShowTab] = React.useState([]);
+  const [showContent, setShowContent] = React.useState(false);
 
   React.useEffect(() => {
-    checkValue();
     getId('id');
-    calculateConsum(refulPrice, priceLiter);
+    console.log(`lackooo ${lastId}`);
     storeData(`store${lastId}`, getSavingData());
-    caluclateAll();
-  }, [refulPrice]);
+    if(showContent) {
+      getId('id');
+      calculateConsum(refulPrice, priceLiter);
+      storeData(`store${lastId}`, getSavingData());
+      caluclateAll(); 
+    } else {
+      alert('Zatial bol zadaný len inicializačný údaj! Prosím, pridajte nový údaj na možný výpočet');
+    }
+  }, [refulPrice, lastId]);
 
   function calculateDiff(new_val, last_val) {
     var value = new_val - last_val;
@@ -95,20 +102,6 @@ export default function Show() {
     setKmPerMonth(kmMonth);
     setMoneyPerMonth(moneyMonth);
   }
-  const checkValue = async () => {
-    try {
-      const value = AsyncStorage.getItem('store1', (err, result) => {
-        var res = JSON.parse(result)
-        if (res) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } catch (error) {
-      alert(error);
-    }
-  }
 
   const getNeededData = (key, bol) => {
     try {
@@ -131,14 +124,22 @@ export default function Show() {
       alert(error);
     }
   }
-  const getId = (key) => {
+  const getId = async (key) => {
     try {
-      const value = AsyncStorage.getItem(key, (err, result) => {
+      const value = await AsyncStorage.getItem(key, (err, result) => {
         var res = JSON.parse(result)
-        setLastId(res[0]);
-        getNeededData(`lacko${res[0]}`, true);
-        var old_id = res[0] -1;
-        getNeededData(`lacko${old_id}`, false);
+        console.log(`toto je res SHOW: ${JSON.stringify(res)}`)
+        setLastId(res.id);
+        console.log(`toto je ast id: ${lastId}`);
+        if(lastId == 1){
+          setShowContent(true);
+        }
+        console.log(showContent)
+        if(showContent) {
+          getNeededData(`${res.id}`, true);
+          var old_id = res.id -1;
+          getNeededData(`lacko${old_id}`, false);
+        }
       })
     } catch(err) {
       console.log(err)

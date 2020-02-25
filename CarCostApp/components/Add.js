@@ -51,10 +51,10 @@ export default function Add() {
     try {
       const value = AsyncStorage.getItem(key, (err, result) => {
         var res = JSON.parse(result)
-        console.log(`toto je res: ${res}`)
-        var new_id = res[0] + 1;
+        console.log(`toto je res Add: ${JSON.stringify(res)}`)
+        var new_id = res.id + 1;
         setCounter(new_id)
-        setKilom(res[1].toString())
+        setKilom(res.kilom)
       });
     } catch (error) {
       alert(error);
@@ -74,7 +74,6 @@ export default function Add() {
   }
   return(
     <DistanceStore.Consumer>{(context) => {
-      const distance = context.oldDistance.toString();
       return (
         <View>
           <View style={styles.content}>
@@ -124,7 +123,7 @@ export default function Add() {
             <TouchableOpacity
               onPress={() => {
                 _storeData(`lacko${counter}`, getData());
-                _storeData('id', JSON.stringify([counter, kilom.toString()]));
+                _storeData('id', JSON.stringify({id: counter, kilom: kilom.toString()}));
                 alert('pridal som');
                 checkValue();
                 }
