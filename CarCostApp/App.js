@@ -16,48 +16,50 @@ export default function App() {
   function RenderContent(props) {
     if(slide){
       const value = props.loadPage;
-      return (<DistanceStore>
+      return (<View>
           {value == 'add' && <Add />}
           {value == 'show' && <Show />}
           {value == 'settings' && <Settings />}
-        </DistanceStore>
+        </View>
       );
     }
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.statusbar}>
-      </View>
-    	<View style={styles.header}>
-        <Text style={styles.title}> Car Cost </Text>
-      </View>
-      <View style={styles.buttonsMenu}>
-        <TouchableOpacity
-          onPress={() => {
-            setSlide('add');
+    <DistanceStore>
+      <View style={styles.container}>
+        <View style={styles.statusbar}>
+        </View>
+      	<View style={styles.header}>
+          <Text style={styles.title}> Car Cost </Text>
+        </View>
+        <View style={styles.buttonsMenu}>
+          <TouchableOpacity
+            onPress={() => {
+              setSlide('add');
+              }
             }
-          }
-          style={styles.topButtons}
-        >
-          <Text style={styles.buttonText}>Pridať</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setSlide('show');
+            style={styles.topButtons}
+          >
+            <Text style={styles.buttonText}>Pridať</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setSlide('show');
+              }
             }
-          }
-          style={styles.topButtons}
-        >
-          <Text style={styles.buttonText}>Pozrieť</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setSlide('settings')}
-          style={styles.topButtons}
-        >
-          <Text style={styles.buttonText}>Nastavenia</Text>
-        </TouchableOpacity>
+            style={styles.topButtons}
+          >
+            <Text style={styles.buttonText}>Pozrieť</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setSlide('settings')}
+            style={styles.topButtons}
+          >
+            <Text style={styles.buttonText}>Nastavenia</Text>
+          </TouchableOpacity>
+        </View>
+        <RenderContent loadPage={slide} />
       </View>
-      <RenderContent loadPage={slide} />
-    </View>
+    </DistanceStore>
   );
 }

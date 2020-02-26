@@ -9,54 +9,43 @@ import styles from './styles/styleShow';
 import moment from 'moment';
 import { DistanceStore } from './context/DistanceStore';
 
-export default function Show() {
-  const [kilom, setKilom] = React.useState([]);
-  const [kilomOld, setKilomOld] = React.useState([]);
+export default function Show(props) {
+  // kilom = aktualne km na tachometri
+  // kilomStart = kilometre na tachometri pri prvom spusteni app/ restarte
+  // kilomLast = naposledy zapisane CELKOVO prejdene km (nie tach)
+  // kilomPassed = aktualne prejdene KM (nie tach) ==> kilomTraveled - kilomLast
+  // kmTraveled = AKTUALNE CELKOVO prejdene km (nie tach) ==> kilom - kilomStart
+  // kmPerMonth = najazdene za mesiac
+  const [kilom, setKilom] = React.useState(0);
+  const [kilomStart, setKilomStart] = React.useState(0);
+  const [kilomLast, setKilomLast] = React.useState(0);
+  const [kilomPassed, setKilomPassed] = React.useState(0);
+  const [kmTraveled, setKmTraveled] = React.useState(0);
+  const [kmPerMonth, setKmPerMonth] = React.useState(0);
 
-  const [priceLiter, setPriceLiter] = React.useState([]);
-  
-  const [refulPrice, setRefulPrice] = React.useState([]);
-
-  const [lastId, setLastId] = React.useState();
-
-  const [kmTraveled, setKmTraveled] = React.useState([]);
-  const [spentMoney, setSpentMoney] = React.useState([]);
-
-  const [kmPerMonth, setKmPerMonth] = React.useState([]);
-  const [moneyPerMonth, setMoneyPerMonth] = React.useState([]);
-
+  const [priceLiter, setPriceLiter] = React.useState(0);
+  // zaplatene - refulPrice = aktualne, spentMoney = celkovo, money/Mont = za mesiac
+  const [refulPrice, setRefulPrice] = React.useState(0);
+  const [spentMoney, setSpentMoney] = React.useState(0);
+  const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
+  // spotreba
   const [consumption, setConsum] = React.useState(0);
-
+  // datum
   const date = moment(new Date()).locale('sk').format("MMMM");
-
+  // kontrola ukazky tabu
   const [showTab, setShowTab] = React.useState([]);
 
   React.useEffect(() => {
-    init()
-  }, [init, getId, lastId, setNeededData, refulPrice, priceLiter, calculateConsum, storeData, getSavingData, caluclateAll]);
-
-   const init = React.useCallback(() => {
     console.log('--------------------kek')
-    getId();
-    if(lastId){
-      setNeededData(`lacko${lastId}`, true);
-      if(lastId >= 1){
-        setNeededData(`lacko${lastId-1}`, false);
-        calculateConsum(refulPrice, priceLiter);
-        storeData(`store${lastId}`, getSavingData());
-        caluclateAll();
-      }
-    }
-  },[getId, lastId, setNeededData, kilom, refulPrice, priceLiter, kilomOld, calculateConsum, storeData, caluclateAll]);
+    setNeededData();
+  }, [kilom, kilomPassed, kmTraveled]);
 
-  function calculateDiff(new_val, last_val) {
-    var value = new_val - last_val;
-    return value;
-  }
   function getSavingData() {
     var data = {
-      kmTraveled: distanceTraveled(kilomOld, kilom),
-      spent: refulPrice,
+      kmTraveled: kmTraveled,
+      kmMonth: kmPerMonth,
+      spent: spentMoney,
+      spentMonth: moneyPerMonth,
       date: date,
     }
     var pureData = JSON.stringify(data);
@@ -65,73 +54,61 @@ export default function Show() {
 
   function calculateConsum(ref_price_old, price_liter) {
     var volume = parseFloat(ref_price_old/price_liter);
-    var km = calculateDiff(kilom, kilomOld)
+    var km = kilom - kilomLast;
     var consum = parseFloat((volume*100)/km).toFixed(2);
     setConsum(consum);
   }
 
-  function distanceTraveled(oldDist, newDist) {
-    var value = newDist - oldDist;
-    return value;
-  }
-
   function caluclateAll() {
-    var kmPassed = 0;
-    var spentAll = 0;
-    var kmMonth = 0;
-    var moneyMonth = 0;
-    for(var i=1; i<=lastId; i++) {
-      try {
-        AsyncStorage.getItem(`store${i}`, (err, res) => {
+    try {
+      AsyncStorage.getItem(`storedData`, (err, res) => {
+        if(res){
           var result = JSON.parse(res);
-          if(lastId > 0) {
-            setKmTraveled(kmPassed += parseInt(result["kmTraveled"]))
-          }
+          setKilomLast(parseInt(result["kmTraveled"]));
+          setKilomPassed(kmTraveled - kilomLast);
           if(date == result['date']) {
-            setKmPerMonth(kmMonth += parseInt(result['kmTraveled']))
-            setMoneyPerMonth(moneyMonth += parseInt(result['spent']))
+            setKmPerMonth(parseInt(result['kmMonth']) + kilomPassed);
+            setMoneyPerMonth(parseInt(result['spentMonth'] + parseInt(refulPrice)));
+          } else {
+            setKmPerMonth(kilomPassed);
+            setMoneyPerMonth(parsInt(refulPrice));
           }
-          setSpentMoney(spentAll += parseInt(result["spent"]))
-         
-        });
-      } catch (err) {
-        alert(err);
-      }
+          setSpentMoney(parseInt(result["spent"]) + parseInt(refulPrice));
+          calculateConsum(refulPrice, priceLiter);
+          console.log(kilomLast, kilomPassed, kmPerMonth, moneyPerMonth, spentMoney,consumption);
+        }   
+      });
+    } catch (err) {
+      alert(err);
     }
   }
 
-  const setNeededData = (key, bol) => {
+  const setNeededData = () => {
     try {
       // Set actual data
-      if(bol) {
-        AsyncStorage.getItem(key, (err, result) => {
-          var res = JSON.parse(result)
-          setKilom(res['kilometers']);
+      AsyncStorage.getItem('lacko', (err, result) => {
+        if(result){
+          var res = JSON.parse(result);
+          setKilom(res['kilometers_new']);
           setRefulPrice(res['fulPrice']);
-          setPriceLiter(res['literPrice'])
-        });
-      // Set old data
-      } else {
-        AsyncStorage.getItem(key, (err, result) => {
-          var res = JSON.parse(result)
-          setKilomOld(res['kilometers']);
-        });
-      }
-      
+          setPriceLiter(res['literPrice']);
+          setKilomStart(res['kilometers_start']);
+          setKmTraveled(res['kilometers_new'] - res['kilometers_start']);
+          console.log(kilom, refulPrice, priceLiter, kilomStart, kmTraveled);
+          caluclateAll();
+          if(kilom){
+            storeData(`storedData`, getSavingData());
+          }
+          // if(true){
+          //   storeData(`storedDataOld`, getSavingData())
+          // } else {
+          //   storeData(`storeDataOld`, getSavingData())
+          //   storeData(`storedDataNew`, getSavingData())
+          // }
+        }
+      });
     } catch (error) {
       alert(error);
-    }
-  }
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('id', (err, result) => {
-        var res = JSON.parse(result)
-        if(res){
-          setLastId(res.id);
-        }
-      })
-    } catch(err) {
-      console.log(err)
     }
   }
 
@@ -161,7 +138,6 @@ export default function Show() {
               <TouchableOpacity
                 onPress={() => {
                   setShowTab('month');
-                  context.changeDistance(kilom)
                 }
               }
               style={showTab == 'month' ? styles.chooseButtonsSelected : styles.chooseButtons}
@@ -171,7 +147,6 @@ export default function Show() {
               <TouchableOpacity
                 onPress={() => {
                   setShowTab('all');
-                  context.changeDistance(kilom)
                 }
               }
               style={showTab == 'all' ? styles.chooseButtonsSelected : styles.chooseButtons}
@@ -184,7 +159,7 @@ export default function Show() {
               <View style={styles.content}>
                 <Text style={styles.contentCaption}> Aktuálne </Text>
                 <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/km</Text></Text>
-                <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{distanceTraveled(kilomOld, kilom)} km</Text> </Text>
+                <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{kilomPassed} km</Text> </Text>
                 <Text style={styles.caption}>Naposledy zaplatený benzín: <Text style={styles.data}>{refulPrice} €</Text></Text>
               </View>
             }
@@ -211,6 +186,5 @@ export default function Show() {
 	);
 }
 
-
- // console.log(`last: ${lastId}, km: ${kilom}, ref: ${refulPrice}, price: ${priceLiter}, kmOld: ${kilomOld}, consum: ${consumption}
-    //   , kmTrav: ${kmTraveled}, spent: ${spentMoney}, kmMonth: ${kmPerMonth}, spentMont: ${moneyPerMonth}`);
+// console.log(`km_tach: ${kilom}, ref: ${refulPrice}, price: ${priceLiter}, kmStart: ${kilomStart}, consum: ${consumption}
+//       , kmTrav: ${kmTraveled}, spent: ${spentMoney}, kmMonth: ${kmPerMonth}, spentMont: ${moneyPerMonth}, kmLast: ${kilomLast}, kmPass: ${kilomPassed}`);

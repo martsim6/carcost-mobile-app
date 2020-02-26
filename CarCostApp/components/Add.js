@@ -12,14 +12,14 @@ import { DistanceStore } from './context/DistanceStore';
 
 export default function Add() {
   const [kilom, setKilom] = React.useState();
+  const [kilomStart, setKilomStart] = React.useState();
   const [refulPrice, setRefulPrice] = React.useState(0);
   const [priceLiter, setPriceLiter] = React.useState(1.);
-  const [counter, setCounter] = React.useState(0);
   const [isSet, setIsSet] = React.useState(false);
 
   React.useEffect(() => {
     checkValue();
-  }, [isSet]);
+  }, []);
 
   const _storeData = async (key, data) => {
     try {
@@ -29,51 +29,39 @@ export default function Add() {
       alert(error);
     }
   }
-  const checkValue = async () => {
+  const checkValue = () => {
     try {
-      const value = AsyncStorage.getItem('lacko0', (err, result) => {
+      AsyncStorage.getItem('lacko', (err, result) => {
         var res = JSON.parse(result)
         if (res) {
           setIsSet(true);
-          _displayData('id');
+          console.log(`toto je res Add: ${JSON.stringify(res)}`)
+          setKilom(res.kilometers_new);
+          setKilomStart(res.kilometers_start);
         } else {
-          setCounter(0);
-          alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
           setIsSet(false);
           setKilom(0)
+          alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
         }
       });
     } catch (error) {
       alert(error);
     }
   }
-  const _displayData = async (key) => {
-    try {
-      const value = AsyncStorage.getItem(key, (err, result) => {
-        var res = JSON.parse(result)
-        console.log(`toto je res Add: ${JSON.stringify(res)}`)
-        var new_id = res.id + 1;
-        setCounter(new_id)
-        setKilom(res.kilom)
-      });
-    } catch (error) {
-      alert(error);
-    }
-  }
+
   function getData(){
     var data = {
-      kilometers: kilom,
+      kilometers_new: kilom,
       fulPrice: refulPrice,
       literPrice: priceLiter,
-      saving_id: counter,
+      kilometers_start: kilomStart,
     };
-    var count = counter + 1;
-    setCounter(count)
     var pureData = JSON.stringify(data);
     return(pureData);
   }
   return(
     <DistanceStore.Consumer>{(context) => {
+      console.log(kilom);
       return (
         <View>
           <View style={styles.content}>
@@ -83,7 +71,10 @@ export default function Add() {
               style={styles.usingInput}
               defaultValue={`${kilom}`}
               onChangeText={text => {
-                setKilom(parseInt(text));
+                setKilom(text)
+                if(!isSet) {
+                  setKilomStart(text)
+                  }
                 }
               }
             />
@@ -122,8 +113,7 @@ export default function Add() {
           <View style={styles.footer}>
             <TouchableOpacity
               onPress={() => {
-                _storeData(`lacko${counter}`, getData());
-                _storeData('id', JSON.stringify({id: counter, kilom: kilom.toString()}));
+                _storeData(`lacko`, getData());
                 alert('pridal som');
                 checkValue();
                 }
