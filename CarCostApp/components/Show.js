@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import styles from './styles/styleShow';
 import moment from 'moment';
+import { DistanceStore } from './context/DistanceStore';
 
 export default function Show() {
   const [kilom, setKilom] = React.useState([]);
@@ -15,9 +16,8 @@ export default function Show() {
   const [priceLiter, setPriceLiter] = React.useState([]);
   
   const [refulPrice, setRefulPrice] = React.useState([]);
-  const [refulPriceOld, setRefulPriceOld] = React.useState([]);
 
-  const [lastId, setLastId] = React.useState([]);
+  const [lastId, setLastId] = React.useState();
 
   const [kmTraveled, setKmTraveled] = React.useState([]);
   const [spentMoney, setSpentMoney] = React.useState([]);
@@ -27,23 +27,32 @@ export default function Show() {
 
   const [consumption, setConsum] = React.useState(0);
 
-  const date = moment(new Date()).lang('sk').format("MMMM");
+  const date = moment(new Date()).locale('sk').format("MMMM");
 
   const [showTab, setShowTab] = React.useState([]);
 
   React.useEffect(() => {
-    checkValue();
-    getId('id');
-    calculateConsum(refulPrice, priceLiter);
-    storeData(`store${lastId}`, getSavingData());
-    caluclateAll();
-  }, [refulPrice]);
+    init()
+  }, [init, getId, lastId, setNeededData, refulPrice, priceLiter, calculateConsum, storeData, getSavingData, caluclateAll]);
+
+   const init = React.useCallback(() => {
+    console.log('--------------------kek')
+    getId();
+    if(lastId){
+      setNeededData(`lacko${lastId}`, true);
+      if(lastId >= 1){
+        setNeededData(`lacko${lastId-1}`, false);
+        calculateConsum(refulPrice, priceLiter);
+        storeData(`store${lastId}`, getSavingData());
+        caluclateAll();
+      }
+    }
+  },[getId, lastId, setNeededData, kilom, refulPrice, priceLiter, kilomOld, calculateConsum, storeData, caluclateAll]);
 
   function calculateDiff(new_val, last_val) {
     var value = new_val - last_val;
     return value;
   }
-
   function getSavingData() {
     var data = {
       kmTraveled: distanceTraveled(kilomOld, kilom),
@@ -73,56 +82,39 @@ export default function Show() {
     var moneyMonth = 0;
     for(var i=1; i<=lastId; i++) {
       try {
-        const value = AsyncStorage.getItem(`store${i}`, (err, res) => {
+        AsyncStorage.getItem(`store${i}`, (err, res) => {
           var result = JSON.parse(res);
           if(lastId > 0) {
-            kmPassed += parseInt(result["kmTraveled"])
+            setKmTraveled(kmPassed += parseInt(result["kmTraveled"]))
           }
           if(date == result['date']) {
-            kmMonth += parseInt(result['kmTraveled'])
-            moneyMonth += parseInt(result['spent'])
+            setKmPerMonth(kmMonth += parseInt(result['kmTraveled']))
+            setMoneyPerMonth(moneyMonth += parseInt(result['spent']))
           }
-          spentAll += parseInt(result["spent"])
+          setSpentMoney(spentAll += parseInt(result["spent"]))
          
         });
       } catch (err) {
         alert(err);
       }
     }
-    setKmTraveled(kmPassed);
-    setSpentMoney(spentAll);
-    setKmPerMonth(kmMonth);
-    setMoneyPerMonth(moneyMonth);
-  }
-  const checkValue = async () => {
-    try {
-      const value = AsyncStorage.getItem('store1', (err, result) => {
-        var res = JSON.parse(result)
-        if (res) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } catch (error) {
-      alert(error);
-    }
   }
 
-  const getNeededData = (key, bol) => {
+  const setNeededData = (key, bol) => {
     try {
+      // Set actual data
       if(bol) {
-        const value = AsyncStorage.getItem(key, (err, result) => {
+        AsyncStorage.getItem(key, (err, result) => {
           var res = JSON.parse(result)
           setKilom(res['kilometers']);
           setRefulPrice(res['fulPrice']);
           setPriceLiter(res['literPrice'])
         });
+      // Set old data
       } else {
-        const value = AsyncStorage.getItem(key, (err, result) => {
+        AsyncStorage.getItem(key, (err, result) => {
           var res = JSON.parse(result)
           setKilomOld(res['kilometers']);
-          setRefulPriceOld(res['fulPrice']);
         });
       }
       
@@ -130,14 +122,13 @@ export default function Show() {
       alert(error);
     }
   }
-  const getId = (key) => {
+  const getId = () => {
     try {
-      const value = AsyncStorage.getItem(key, (err, result) => {
+      AsyncStorage.getItem('id', (err, result) => {
         var res = JSON.parse(result)
-        setLastId(res);
-        getNeededData(`lacko${res}`, true);
-        var old_id = res -1;
-        getNeededData(`lacko${old_id}`, false);
+        if(res){
+          setLastId(res.id);
+        }
       })
     } catch(err) {
       console.log(err)
@@ -153,63 +144,73 @@ export default function Show() {
   }
 
 	return(
-    <View>
-      <View style={styles.contentShow}>
-        <View style={styles.chooseTabs}>
-          <TouchableOpacity
-            onPress={() => {
-              setShowTab('current');
+    <DistanceStore.Consumer>{(context) => {
+      return(
+        <View>
+          <View style={styles.contentShow}>
+            <View style={styles.chooseTabs}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowTab('current');
+                }
+              }
+              style={showTab == 'current' ? styles.chooseButtonsSelected : styles.chooseButtons}
+              >
+                <Text style={styles.chooseButtonText}> Aktuálne </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowTab('month');
+                  context.changeDistance(kilom)
+                }
+              }
+              style={showTab == 'month' ? styles.chooseButtonsSelected : styles.chooseButtons}
+              >
+                <Text style={styles.chooseButtonText}> Za mesiac </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowTab('all');
+                  context.changeDistance(kilom)
+                }
+              }
+              style={showTab == 'all' ? styles.chooseButtonsSelected : styles.chooseButtons}
+              >
+                <Text style={styles.chooseButtonText}>Celkovo</Text>
+              </TouchableOpacity>
+            </View>
+            { 
+              showTab == 'current' &&
+              <View style={styles.content}>
+                <Text style={styles.contentCaption}> Aktuálne </Text>
+                <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/km</Text></Text>
+                <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{distanceTraveled(kilomOld, kilom)} km</Text> </Text>
+                <Text style={styles.caption}>Naposledy zaplatený benzín: <Text style={styles.data}>{refulPrice} €</Text></Text>
+              </View>
             }
-          }
-          style={showTab == 'current' ? styles.chooseButtonsSelected : styles.chooseButtons}
-          >
-            <Text style={styles.chooseButtonText}> Aktuálne </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setShowTab('month');
+            {
+              showTab == 'month' &&
+              <View style={styles.content}>
+                <Text style={styles.contentCaption}> Za mesiac {date} </Text>
+                <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmPerMonth} km</Text> </Text>
+                <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{moneyPerMonth} €</Text></Text>
+              </View>
             }
-          }
-          style={showTab == 'month' ? styles.chooseButtonsSelected : styles.chooseButtons}
-          >
-            <Text style={styles.chooseButtonText}> Za mesiac </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setShowTab('all');
+            {
+              showTab == 'all' && 
+              <View style={styles.content}>
+                <Text style={styles.contentCaption}> Celkovo </Text>
+                <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmTraveled} km</Text> </Text>
+                <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{spentMoney} €</Text></Text>
+              </View>
             }
-          }
-          style={showTab == 'all' ? styles.chooseButtonsSelected : styles.chooseButtons}
-          >
-            <Text style={styles.chooseButtonText}>Celkovo</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-        { 
-          showTab == 'current' &&
-          <View style={styles.content}>
-            <Text style={styles.contentCaption}> Aktuálne </Text>
-            <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/km</Text></Text>
-            <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{distanceTraveled(kilomOld, kilom)} km</Text> </Text>
-            <Text style={styles.caption}>Naposledy zaplatený benzín: <Text style={styles.data}>{refulPrice} €</Text></Text>
-          </View>
-        }
-        {
-          showTab == 'month' &&
-          <View style={styles.content}>
-            <Text style={styles.contentCaption}> Za mesiac {date} </Text>
-            <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmPerMonth} km</Text> </Text>
-            <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{moneyPerMonth} €</Text></Text>
-          </View>
-        }
-        {
-          showTab == 'all' && 
-          <View style={styles.content}>
-            <Text style={styles.contentCaption}> Celkovo </Text>
-            <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmTraveled} km</Text> </Text>
-            <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{spentMoney} €</Text></Text>
-          </View>
-        }
-      </View>
-    </View>
+      )
+    }}</DistanceStore.Consumer>
 	);
 }
+
+
+ // console.log(`last: ${lastId}, km: ${kilom}, ref: ${refulPrice}, price: ${priceLiter}, kmOld: ${kilomOld}, consum: ${consumption}
+    //   , kmTrav: ${kmTraveled}, spent: ${spentMoney}, kmMonth: ${kmPerMonth}, spentMont: ${moneyPerMonth}`);

@@ -1,4 +1,22 @@
 import { StyleSheet } from 'react-native';
+import { Dimensions, Platform, PixelRatio } from 'react-native';
+
+const {
+  width: SCREEN_WIDTH,
+  height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
+
+// based on iphone 5s's scale
+const scale = SCREEN_WIDTH / 320;
+
+export function normalize(size) {
+  const newSize = size * scale 
+  if (Platform.OS === 'ios') {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize))
+  } else {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+  }
+}
 
 export default StyleSheet.create({
 	content: {
@@ -7,14 +25,14 @@ export default StyleSheet.create({
   },
   caption: {
     color: "#fff",
-    fontSize: 25,
+    fontSize: normalize(25),
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   using: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: normalize(15),
     marginTop: 25,
   },
   usingInput: {
