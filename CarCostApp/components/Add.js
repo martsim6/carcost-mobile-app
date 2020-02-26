@@ -8,60 +8,96 @@ import {
   AsyncStorage
 } from 'react-native';
 import styles from './styles/stylesAdd';
+import moment from 'moment';
 import { DistanceStore } from './context/DistanceStore';
 
 export default function Add() {
+  //new
   const [kilom, setKilom] = React.useState();
   const [kilomStart, setKilomStart] = React.useState();
   const [refulPrice, setRefulPrice] = React.useState(0);
   const [priceLiter, setPriceLiter] = React.useState(1.);
   const [isSet, setIsSet] = React.useState(false);
+  //old
+  const [kilomLast, setKilomLast] = React.useState(0);
+  const [kilomPassed, setKilomPassed] = React.useState(0);
+  const [kmTraveled, setKmTraveled] = React.useState(0);
+  const [kmPerMonth, setKmPerMonth] = React.useState(0);
+
+  const [spentMoney, setSpentMoney] = React.useState(0);
+  const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
+  const [consumption, setConsum] = React.useState(0);
+
+  const date = moment(new Date()).locale('sk').format("MMMM");
 
   React.useEffect(() => {
-    checkValue();
+    checkAndSave();
   }, []);
 
-  const _storeData = async (key, data) => {
-    try {
-      console.log(key, data)
-      await AsyncStorage.setItem(key, data);
-    } catch (error) {
-      alert(error);
-    }
+  const checkAndSave = () => {
+    AsyncStorage.getItem('saveData', (err, result) => {
+      if(!result){
+        // console.log(result);
+        setKilom(0);
+        alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
+      } else {
+        setIsSet(true)
+        var res = JSON.parse(result);
+        setKilomLast(res.kilometers_new);
+        setKilomPassed(parseInt(kmTraveled - kilomLast));
+        // console.log(kilomPassed);
+        var volume = parseFloat(refulPrice/priceLiter);
+        // console.log(volume*100/kilomPassed)
+        setConsum(parseFloat((volume*100)/kilomPassed).toFixed(2));
+        // console.log(consumption)
+        setSpentMoney(res.fulPrice + priceLiter)
+        // ---------
+        // if(date == res.date){
+        //   setMoneyPerMonth()
+        // }
+        // ---------
+        storeData('sendData', getDataOut());
+        storeData('saveData', getDataHere());
+      }
+    });
   }
-  const checkValue = () => {
-    try {
-      AsyncStorage.getItem('lacko', (err, result) => {
-        var res = JSON.parse(result)
-        if (res) {
-          setIsSet(true);
-          console.log(`toto je res Add: ${JSON.stringify(res)}`)
-          setKilom(res.kilometers_new);
-          setKilomStart(res.kilometers_start);
-        } else {
-          setIsSet(false);
-          setKilom(0)
-          alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
-        }
-      });
-    } catch (error) {
-      alert(error);
-    }
+  function getDataOut(){
+    var dataOut = {
+      consumption: consumption,
+      kmPassed: kilomPassed,
+      fulPrice: refulPrice,
+      // --- za mesiac
+      //
+      kmTraveled: kmTraveled,
+      spentMoney: spentMoney,
+    };
+    var pureDataOut = JSON.stringify(dataOut);
+    return(pureDataOut)
   }
-
-  function getData(){
+  function getDataHere(){
     var data = {
       kilometers_new: kilom,
       fulPrice: refulPrice,
       literPrice: priceLiter,
       kilometers_start: kilomStart,
+      kilometers_traveled: parseInt(kilom - kilomStart),
+      date: date,
     };
     var pureData = JSON.stringify(data);
     return(pureData);
   }
+
+  const storeData = async (key, data) => {
+    try {
+      // console.log(key, data)
+      await AsyncStorage.setItem(key, data);
+    } catch (error) {
+      alert(error);
+    }
+  }
+  
   return(
     <DistanceStore.Consumer>{(context) => {
-      console.log(kilom);
       return (
         <View>
           <View style={styles.content}>
@@ -73,7 +109,8 @@ export default function Add() {
               onChangeText={text => {
                 setKilom(text)
                 if(!isSet) {
-                  setKilomStart(text)
+                  setKilomStart(text);
+                  setKmTraveled(kilom - kilomStart);
                   }
                 }
               }
@@ -113,9 +150,10 @@ export default function Add() {
           <View style={styles.footer}>
             <TouchableOpacity
               onPress={() => {
-                _storeData(`lacko`, getData());
                 alert('pridal som');
-                checkValue();
+                console.log(getDataHere())
+                storeData(`saveData`, getDataHere());
+                checkAndSave(); 
                 }
               }
               style={styles.confirmButton}
