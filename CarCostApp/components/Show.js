@@ -16,7 +16,6 @@ export default function Show() {
   const [priceLiter, setPriceLiter] = React.useState([]);
   
   const [refulPrice, setRefulPrice] = React.useState([]);
-  const [refulPriceOld, setRefulPriceOld] = React.useState([]);
 
   const [lastId, setLastId] = React.useState();
 
@@ -31,27 +30,29 @@ export default function Show() {
   const date = moment(new Date()).locale('sk').format("MMMM");
 
   const [showTab, setShowTab] = React.useState([]);
-  const [showContent, setShowContent] = React.useState(false);
 
   React.useEffect(() => {
-    getId('id');
-    console.log(`lackooo ${lastId}`);
-    storeData(`store${lastId}`, getSavingData());
-    if(showContent) {
-      getId('id');
-      calculateConsum(refulPrice, priceLiter);
-      storeData(`store${lastId}`, getSavingData());
-      caluclateAll(); 
-    } else {
-      alert('Zatial bol zadaný len inicializačný údaj! Prosím, pridajte nový údaj na možný výpočet');
+    init()
+  }, [init, getId, lastId, setNeededData, refulPrice, priceLiter, calculateConsum, storeData, getSavingData, caluclateAll]);
+
+   const init = React.useCallback(() => {
+    console.log('--------------------kek')
+    getId();
+    if(lastId){
+      setNeededData(`lacko${lastId}`, true);
+      if(lastId >= 1){
+        setNeededData(`lacko${lastId-1}`, false);
+        calculateConsum(refulPrice, priceLiter);
+        storeData(`store${lastId}`, getSavingData());
+        caluclateAll();
+      }
     }
-  }, [refulPrice, lastId]);
+  },[getId, lastId, setNeededData, kilom, refulPrice, priceLiter, kilomOld, calculateConsum, storeData, caluclateAll]);
 
   function calculateDiff(new_val, last_val) {
     var value = new_val - last_val;
     return value;
   }
-
   function getSavingData() {
     var data = {
       kmTraveled: distanceTraveled(kilomOld, kilom),
@@ -81,42 +82,39 @@ export default function Show() {
     var moneyMonth = 0;
     for(var i=1; i<=lastId; i++) {
       try {
-        const value = AsyncStorage.getItem(`store${i}`, (err, res) => {
+        AsyncStorage.getItem(`store${i}`, (err, res) => {
           var result = JSON.parse(res);
           if(lastId > 0) {
-            kmPassed += parseInt(result["kmTraveled"])
+            setKmTraveled(kmPassed += parseInt(result["kmTraveled"]))
           }
           if(date == result['date']) {
-            kmMonth += parseInt(result['kmTraveled'])
-            moneyMonth += parseInt(result['spent'])
+            setKmPerMonth(kmMonth += parseInt(result['kmTraveled']))
+            setMoneyPerMonth(moneyMonth += parseInt(result['spent']))
           }
-          spentAll += parseInt(result["spent"])
+          setSpentMoney(spentAll += parseInt(result["spent"]))
          
         });
       } catch (err) {
         alert(err);
       }
     }
-    setKmTraveled(kmPassed);
-    setSpentMoney(spentAll);
-    setKmPerMonth(kmMonth);
-    setMoneyPerMonth(moneyMonth);
   }
 
-  const getNeededData = (key, bol) => {
+  const setNeededData = (key, bol) => {
     try {
+      // Set actual data
       if(bol) {
-        const value = AsyncStorage.getItem(key, (err, result) => {
+        AsyncStorage.getItem(key, (err, result) => {
           var res = JSON.parse(result)
           setKilom(res['kilometers']);
           setRefulPrice(res['fulPrice']);
           setPriceLiter(res['literPrice'])
         });
+      // Set old data
       } else {
-        const value = AsyncStorage.getItem(key, (err, result) => {
+        AsyncStorage.getItem(key, (err, result) => {
           var res = JSON.parse(result)
           setKilomOld(res['kilometers']);
-          setRefulPriceOld(res['fulPrice']);
         });
       }
       
@@ -124,21 +122,12 @@ export default function Show() {
       alert(error);
     }
   }
-  const getId = async (key) => {
+  const getId = () => {
     try {
-      const value = await AsyncStorage.getItem(key, (err, result) => {
+      AsyncStorage.getItem('id', (err, result) => {
         var res = JSON.parse(result)
-        console.log(`toto je res SHOW: ${JSON.stringify(res)}`)
-        setLastId(res.id);
-        console.log(`toto je ast id: ${lastId}`);
-        if(lastId == 1){
-          setShowContent(true);
-        }
-        console.log(showContent)
-        if(showContent) {
-          getNeededData(`${res.id}`, true);
-          var old_id = res.id -1;
-          getNeededData(`lacko${old_id}`, false);
+        if(res){
+          setLastId(res.id);
         }
       })
     } catch(err) {
@@ -163,7 +152,6 @@ export default function Show() {
               <TouchableOpacity
                 onPress={() => {
                   setShowTab('current');
-                  context.changeDistance(kilom)
                 }
               }
               style={showTab == 'current' ? styles.chooseButtonsSelected : styles.chooseButtons}
@@ -222,3 +210,7 @@ export default function Show() {
     }}</DistanceStore.Consumer>
 	);
 }
+
+
+ // console.log(`last: ${lastId}, km: ${kilom}, ref: ${refulPrice}, price: ${priceLiter}, kmOld: ${kilomOld}, consum: ${consumption}
+    //   , kmTrav: ${kmTraveled}, spent: ${spentMoney}, kmMonth: ${kmPerMonth}, spentMont: ${moneyPerMonth}`);

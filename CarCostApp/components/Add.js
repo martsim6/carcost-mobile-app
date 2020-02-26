@@ -40,7 +40,7 @@ export default function Add() {
           setCounter(0);
           alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
           setIsSet(false);
-          setKilom('0')
+          setKilom(0)
         }
       });
     } catch (error) {
@@ -81,7 +81,7 @@ export default function Add() {
             <Text style={styles.using}>Najazdené km:</Text>
             <TextInput
               style={styles.usingInput}
-              defaultValue={kilom}
+              defaultValue={`${kilom}`}
               onChangeText={text => {
                 setKilom(parseInt(text));
                 }
