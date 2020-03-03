@@ -27,12 +27,13 @@ export default function Add() {
   const [spentMoney, setSpentMoney] = React.useState(0);
   const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
   const [consumption, setConsum] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
 
   const date = moment(new Date()).locale('sk').format("MMMM");
 
   React.useEffect(() => {
     checkAndSave();
-  }, []);
+  }, [checkAndSave, kilomLast, kilomPassed]);
 
   const checkAndSave = () => {
     AsyncStorage.getItem('saveData', (err, result) => {
@@ -43,21 +44,27 @@ export default function Add() {
       } else {
         setIsSet(true)
         var res = JSON.parse(result);
+        setKilom(res.kilometers_new);
+        console.log(res)
+        setKilomStart(res.kilometers_start);
+        console.log(`kilomStart: ${kilomStart}`)
+        setKmTraveled(parseInt(kilom) - parseInt(kilomStart));
+        console.log(`kmTrav: ${kmTraveled}, kilom: ${kilom}, start: ${kilomStart}`)
         setKilomLast(res.kilometers_new);
-        setKilomPassed(parseInt(kmTraveled - kilomLast));
-        // console.log(kilomPassed);
+        console.log(`kmLast: ${kilomLast}`)
+        setKilomPassed(parseInt(kmTraveled - res.kilometers_traveled));
+        console.log(`kilomPassed: ${kilomPassed} = ${kmTraveled} - ${res.kilometers_traveled}`);
         var volume = parseFloat(refulPrice/priceLiter);
-        // console.log(volume*100/kilomPassed)
+        console.log(`volume: ${volume*100/kilomPassed}`)
         setConsum(parseFloat((volume*100)/kilomPassed).toFixed(2));
-        // console.log(consumption)
-        setSpentMoney(res.fulPrice + priceLiter)
+        console.log(`consum: ${consumption}`);
+        setSpentMoney(parseInt(res.fulPrice) + parseInt(refulPrice));
+        console.log(`spent: ${spentMoney}`);
         // ---------
         // if(date == res.date){
         //   setMoneyPerMonth()
         // }
         // ---------
-        storeData('sendData', getDataOut());
-        storeData('saveData', getDataHere());
       }
     });
   }
@@ -95,6 +102,10 @@ export default function Add() {
       alert(error);
     }
   }
+  function saveAll() {
+    storeData('sendData', getDataOut());
+    storeData('saveData', getDataHere());
+  }
   
   return(
     <DistanceStore.Consumer>{(context) => {
@@ -110,7 +121,6 @@ export default function Add() {
                 setKilom(text)
                 if(!isSet) {
                   setKilomStart(text);
-                  setKmTraveled(kilom - kilomStart);
                   }
                 }
               }
@@ -151,9 +161,15 @@ export default function Add() {
             <TouchableOpacity
               onPress={() => {
                 alert('pridal som');
-                console.log(getDataHere())
-                storeData(`saveData`, getDataHere());
-                checkAndSave(); 
+                if(!isSet) {
+                  storeData(`saveData`, getDataHere());
+                  checkAndSave(); 
+                } else {
+                  checkAndSave();
+                  saveAll();
+                }
+                // console.log(getDataOut());
+                // storeData(`sendData`, getDataOut());
                 }
               }
               style={styles.confirmButton}
