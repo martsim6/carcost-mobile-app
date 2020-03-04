@@ -13,7 +13,7 @@ import { DistanceStore } from './context/DistanceStore';
 
 export default function Add() {
   //new
-  const [kilom, setKilom] = React.useState();
+  const [kilom, setKilom] = React.useState("");
   const [kilomStart, setKilomStart] = React.useState();
   const [refulPrice, setRefulPrice] = React.useState(0);
   const [priceLiter, setPriceLiter] = React.useState(1.);
@@ -28,60 +28,45 @@ export default function Add() {
   const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
   const [consumption, setConsum] = React.useState(0);
 
-  const [loading, setLoading] = React.useState();
+  const [loading, setLoading] = React.useState(true);
 
   const date = moment(new Date()).locale('sk').format("MMMM");
 
   React.useEffect(() => {
     checkAndSet();
-  }, [kilomPassed, loading]);
+  }, [kilomPassed, refulPrice, priceLiter, consumption]);
 
   const checkAndSet = async () => {
     try{
       await AsyncStorage.getItem('saveData', (err, result) => {
         if(!result){
-          // console.log(result);
           setKilom(0);
-          alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
+          // alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
         } else {
           setIsSet(true);
           var res = JSON.parse(result);
-          console.log(res)
-
+          // setKilom(res.kilometers_new);
           setKilomStart(res.kilometers_start);
-          console.log(`kilomStart: ${kilomStart}`)
 
           setKilomLast(res.kilometers_new);
-          console.log(`kmLast: ${kilomLast}`)
 
           setKmTraveled(parseInt(kilom) - parseInt(kilomStart));
-          console.log(`kmTrav: ${kmTraveled}, kilom: ${kilom}, start: ${kilomStart}`)
 
           setKilomPassed(parseInt(kmTraveled - res.kilometers_traveled));
-          console.log(`kilomPassed: ${kilomPassed} = ${kmTraveled} - ${res.kilometers_traveled}`);
 
           var volume = parseFloat(refulPrice/priceLiter);
-          console.log(`volume: ${parseFloat(refulPrice/priceLiter)}`)
 
           setConsum(parseFloat((volume*100)/parseInt(kmTraveled - res.kilometers_traveled)).toFixed(2));
-          console.log(`consum: ${consumption}`);
 
-          setSpentMoney(parseInt(res.fulPrice) + parseInt(refulPrice));
-          console.log(`spent: ${spentMoney}`);
+          setSpentMoney(parseInt(res.spentMoney) + parseInt(refulPrice));
 
-          setLoading(false);
-          console.log(`loading: ${loading}`)
-
-          if(parseInt(consumption)){
-            console.log('apksvjapjgpaofgjkpio');
-            setConsum(10/0);
+          if(date == res.date){
+            setMoneyPerMonth(parseInt(res.spentMoney) + parseInt(refulPrice));
+            setKmPerMonth(parseInt(res.kmPerMon) + parseInt(kmTraveled - res.kilometers_traveled));
+          } else {
+            setMoneyPerMonth(parseInt(refulPrice));
+            setKmPerMonth(parseInt(kmTraveled - res.kilometers_traveled));
           }
-
-          // ---------
-          // if(date == res.date){
-          //   setMoneyPerMonth()
-          // }
-          // ---------
         }
       });
     } catch(err) {
@@ -93,8 +78,8 @@ export default function Add() {
       consumption: consumption,
       kmPassed: kilomPassed,
       fulPrice: refulPrice,
-      // --- za mesiac
-      //
+      monPerMon: moneyPerMonth,
+      kmPerMon: kmPerMonth,
       kmTraveled: kmTraveled,
       spentMoney: spentMoney,
     };
@@ -104,10 +89,11 @@ export default function Add() {
   function getDataHere(){
     var data = {
       kilometers_new: kilom,
-      fulPrice: refulPrice,
       literPrice: priceLiter,
       kilometers_start: kilomStart,
       kilometers_traveled: parseInt(kilom - kilomStart),
+      spentMoney: spentMoney,
+      kmPerMon: kmPerMonth,
       date: date,
     };
     var pureData = JSON.stringify(data);
@@ -116,7 +102,6 @@ export default function Add() {
 
   const storeData = async (key, data) => {
     try {
-      // console.log(key, data)
       await AsyncStorage.setItem(key, data);
     } catch (error) {
       alert(error);
@@ -184,9 +169,7 @@ export default function Add() {
                   storeData(`saveData`, getDataHere());
                   checkAndSet();
                 } else {
-                  console.log(`-----------ANO---------- `);
-                  setLoading(true);
-                  // saveAll();
+                  saveAll();
                 }
               }}
               style={styles.confirmButton}

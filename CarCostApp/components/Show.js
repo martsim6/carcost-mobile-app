@@ -16,11 +16,13 @@ export default function Show(props) {
   const [refulPrice, setRefulPrice] = React.useState();
   const [kmTraveled, setKmTraveled] = React.useState();
   const [spentMoney, setSpentMoney] = React.useState();
+  const [moneyPerMonth, setMoneyPerMonth] = React.useState();
+  const [kmPerMonth, setKmPerMonth] = React.useState();
+
+  const date = moment(new Date()).locale('sk').format("MMMM");
 
   React.useEffect(() => {
-    console.log('--------------------kek')
     setNeededData();
-    console.log(`ref: ${refulPrice}, consum: ${consumption}, kmTrav: ${kmTraveled}, kmPass: ${kilomPassed}, spent: ${spentMoney}`);
   }, [setNeededData, consumption, kilomPassed, kmTraveled, spentMoney]);
 
   const setNeededData = () => {
@@ -34,6 +36,8 @@ export default function Show(props) {
           setRefulPrice(res.fulPrice);
           setKmTraveled(res.kmTraveled);
           setSpentMoney(res.spentMoney);
+          setMoneyPerMonth(res.monPerMon);
+          setKmPerMonth(res.kmPerMon);
         }
       });
     } catch (error){
@@ -79,7 +83,7 @@ export default function Show(props) {
               showTab == 'current' &&
               <View style={styles.content}>
                 <Text style={styles.contentCaption}> Aktuálne </Text>
-                <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/km</Text></Text>
+                <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/100km</Text></Text>
                 <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{kilomPassed} km</Text> </Text>
                 <Text style={styles.caption}>Naposledy zaplatený benzín: <Text style={styles.data}>{refulPrice} €</Text></Text>
               </View>
@@ -106,6 +110,3 @@ export default function Show(props) {
     }}</DistanceStore.Consumer>
 	);
 }
-
-// console.log(`km_tach: ${kilom}, ref: ${refulPrice}, price: ${priceLiter}, kmStart: ${kilomStart}, consum: ${consumption}
-//       , kmTrav: ${kmTraveled}, spent: ${spentMoney}, kmMonth: ${kmPerMonth}, spentMont: ${moneyPerMonth}, kmLast: ${kilomLast}, kmPass: ${kilomPassed}`);
