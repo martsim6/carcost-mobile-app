@@ -27,46 +27,66 @@ export default function Add() {
   const [spentMoney, setSpentMoney] = React.useState(0);
   const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
   const [consumption, setConsum] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+
+  const [loading, setLoading] = React.useState();
 
   const date = moment(new Date()).locale('sk').format("MMMM");
 
   React.useEffect(() => {
-    checkAndSave();
-  }, [checkAndSave, kilomLast, kilomPassed]);
+    checkAndSet();
+  }, [kilomPassed, loading]);
 
-  const checkAndSave = () => {
-    AsyncStorage.getItem('saveData', (err, result) => {
-      if(!result){
-        // console.log(result);
-        setKilom(0);
-        alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
-      } else {
-        setIsSet(true)
-        var res = JSON.parse(result);
-        setKilom(res.kilometers_new);
-        console.log(res)
-        setKilomStart(res.kilometers_start);
-        console.log(`kilomStart: ${kilomStart}`)
-        setKmTraveled(parseInt(kilom) - parseInt(kilomStart));
-        console.log(`kmTrav: ${kmTraveled}, kilom: ${kilom}, start: ${kilomStart}`)
-        setKilomLast(res.kilometers_new);
-        console.log(`kmLast: ${kilomLast}`)
-        setKilomPassed(parseInt(kmTraveled - res.kilometers_traveled));
-        console.log(`kilomPassed: ${kilomPassed} = ${kmTraveled} - ${res.kilometers_traveled}`);
-        var volume = parseFloat(refulPrice/priceLiter);
-        console.log(`volume: ${volume*100/kilomPassed}`)
-        setConsum(parseFloat((volume*100)/kilomPassed).toFixed(2));
-        console.log(`consum: ${consumption}`);
-        setSpentMoney(parseInt(res.fulPrice) + parseInt(refulPrice));
-        console.log(`spent: ${spentMoney}`);
-        // ---------
-        // if(date == res.date){
-        //   setMoneyPerMonth()
-        // }
-        // ---------
-      }
-    });
+  const checkAndSet = async () => {
+    try{
+      await AsyncStorage.getItem('saveData', (err, result) => {
+        if(!result){
+          // console.log(result);
+          setKilom(0);
+          alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
+        } else {
+          setIsSet(true);
+          var res = JSON.parse(result);
+          console.log(res)
+
+          setKilomStart(res.kilometers_start);
+          console.log(`kilomStart: ${kilomStart}`)
+
+          setKilomLast(res.kilometers_new);
+          console.log(`kmLast: ${kilomLast}`)
+
+          setKmTraveled(parseInt(kilom) - parseInt(kilomStart));
+          console.log(`kmTrav: ${kmTraveled}, kilom: ${kilom}, start: ${kilomStart}`)
+
+          setKilomPassed(parseInt(kmTraveled - res.kilometers_traveled));
+          console.log(`kilomPassed: ${kilomPassed} = ${kmTraveled} - ${res.kilometers_traveled}`);
+
+          var volume = parseFloat(refulPrice/priceLiter);
+          console.log(`volume: ${parseFloat(refulPrice/priceLiter)}`)
+
+          setConsum(parseFloat((volume*100)/parseInt(kmTraveled - res.kilometers_traveled)).toFixed(2));
+          console.log(`consum: ${consumption}`);
+
+          setSpentMoney(parseInt(res.fulPrice) + parseInt(refulPrice));
+          console.log(`spent: ${spentMoney}`);
+
+          setLoading(false);
+          console.log(`loading: ${loading}`)
+
+          if(parseInt(consumption)){
+            console.log('apksvjapjgpaofgjkpio');
+            setConsum(10/0);
+          }
+
+          // ---------
+          // if(date == res.date){
+          //   setMoneyPerMonth()
+          // }
+          // ---------
+        }
+      });
+    } catch(err) {
+      console.log(err);
+    }
   }
   function getDataOut(){
     var dataOut = {
@@ -106,7 +126,6 @@ export default function Add() {
     storeData('sendData', getDataOut());
     storeData('saveData', getDataHere());
   }
-  
   return(
     <DistanceStore.Consumer>{(context) => {
       return (
@@ -163,15 +182,13 @@ export default function Add() {
                 alert('pridal som');
                 if(!isSet) {
                   storeData(`saveData`, getDataHere());
-                  checkAndSave(); 
+                  checkAndSet();
                 } else {
-                  checkAndSave();
-                  saveAll();
+                  console.log(`-----------ANO---------- `);
+                  setLoading(true);
+                  // saveAll();
                 }
-                // console.log(getDataOut());
-                // storeData(`sendData`, getDataOut());
-                }
-              }
+              }}
               style={styles.confirmButton}
               >
               <Text style={styles.confirmButtonText}> Pridať záznam </Text>
