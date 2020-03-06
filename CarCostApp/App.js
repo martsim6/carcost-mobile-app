@@ -7,7 +7,6 @@ import Settings from './components/Settings'
 import DistanceStore from './components/context/DistanceStore';
 
 export default function App() {
-
   const [slide, setSlide] = React.useState('add');
 
   React.useEffect(() => {
