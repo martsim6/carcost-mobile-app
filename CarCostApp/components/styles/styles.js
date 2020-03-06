@@ -24,7 +24,7 @@ export default StyleSheet.create({
     backgroundColor: '#1d241f',
   },
   statusbar: {
-    backgroundColor: "#FFCE00",
+    backgroundColor: "ff8400",
     height: 20,
     alignItems: 'center',
   },
