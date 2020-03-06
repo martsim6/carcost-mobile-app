@@ -24,7 +24,7 @@ export default StyleSheet.create({
     backgroundColor: '#1d241f',
   },
   statusbar: {
-    backgroundColor: "ff8400",
+    backgroundColor: "#ff8400",
     height: 20,
     alignItems: 'center',
   },
@@ -45,6 +45,7 @@ export default StyleSheet.create({
   buttonsMenu:{
     flexDirection: 'row',
     justifyContent: 'space-around',
+    height: normalize(45),
     width: '100%',
   },
   topButtons: {
@@ -52,13 +53,23 @@ export default StyleSheet.create({
     borderRadius: 5,
     borderBottomColor: "#ff8400",
     borderBottomWidth: 2,
-    alignItems: 'center',
+    // alignItems: 'center',
     width: '30%',
   },
   buttonText: {
     fontSize: normalize(12),
     color: '#fff',
-  }, 
+  },
+  buttonContent:{
+    flexDirection: "row",
+    justifyContent: 'center',
+  },
+  icons: {
+    width: normalize(16), 
+    height: normalize(16),
+    marginLeft: 5,
+    tintColor: "#ff8400",
+  },
 
   // Main content
 });
