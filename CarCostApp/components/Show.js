@@ -19,7 +19,7 @@ export default function Show(props) {
   const [moneyPerMonth, setMoneyPerMonth] = React.useState();
   const [kmPerMonth, setKmPerMonth] = React.useState();
 
-  const date = moment(new Date()).locale('sk').format("MMMM");
+  const date = moment(new Date()).format("MMMM");
 
   React.useEffect(() => {
     setNeededData();

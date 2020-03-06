@@ -30,7 +30,7 @@ export default function Add() {
 
   const [loading, setLoading] = React.useState(true);
 
-  const date = moment(new Date()).locale('sk').format("MMMM");
+  const date = moment(new Date()).format("MMMM");
 
   React.useEffect(() => {
     checkAndSet();
@@ -41,23 +41,16 @@ export default function Add() {
       await AsyncStorage.getItem('saveData', (err, result) => {
         if(!result){
           setKilom(0);
-          // alert("V záznamoch neboli nájdené žiadne hodnoty. Prosím, zadajte potrebné informácie");
         } else {
           setIsSet(true);
           var res = JSON.parse(result);
-          // setKilom(res.kilometers_new);
           setKilomStart(res.kilometers_start);
-
           setKilomLast(res.kilometers_new);
-
           setKmTraveled(parseInt(kilom) - parseInt(kilomStart));
-
           setKilomPassed(parseInt(kmTraveled - res.kilometers_traveled));
 
-          var volume = parseFloat(refulPrice/priceLiter);
-
+          const volume = parseFloat(refulPrice/priceLiter);
           setConsum(parseFloat((volume*100)/parseInt(kmTraveled - res.kilometers_traveled)).toFixed(2));
-
           setSpentMoney(parseInt(res.spentMoney) + parseInt(refulPrice));
 
           if(date == res.date){
@@ -99,7 +92,6 @@ export default function Add() {
     var pureData = JSON.stringify(data);
     return(pureData);
   }
-
   const storeData = async (key, data) => {
     try {
       await AsyncStorage.setItem(key, data);
@@ -164,7 +156,7 @@ export default function Add() {
           <View style={styles.footer}>
             <TouchableOpacity
               onPress={() => {
-                alert('pridal som');
+                alert('Záznam bol pridaný');
                 if(!isSet) {
                   storeData(`saveData`, getDataHere());
                   checkAndSet();
