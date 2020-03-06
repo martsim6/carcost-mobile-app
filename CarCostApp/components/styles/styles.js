@@ -1,4 +1,22 @@
 import { StyleSheet } from 'react-native';
+import { Dimensions, Platform, PixelRatio } from 'react-native';
+
+const {
+  width: SCREEN_WIDTH,
+  height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
+
+// based on iphone 5s's scale
+const scale = SCREEN_WIDTH / 320;
+
+export function normalize(size) {
+  const newSize = size * scale 
+  if (Platform.OS === 'ios') {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize))
+  } else {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+  }
+}
 
 export default StyleSheet.create({
   container: {
@@ -6,7 +24,7 @@ export default StyleSheet.create({
     backgroundColor: '#1d241f',
   },
   statusbar: {
-    backgroundColor: "#FFCE00",
+    backgroundColor: "ff8400",
     height: 20,
     alignItems: 'center',
   },
@@ -18,7 +36,7 @@ export default StyleSheet.create({
   },
   title: {
     color: '#ff8400',
-    fontSize: 28,
+    fontSize: normalize(28),
     fontWeight: '900',
   },
 
@@ -26,7 +44,7 @@ export default StyleSheet.create({
 
   buttonsMenu:{
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
     width: '100%',
   },
   topButtons: {
@@ -35,17 +53,10 @@ export default StyleSheet.create({
     borderBottomColor: "#ff8400",
     borderBottomWidth: 2,
     alignItems: 'center',
-    width: '33%',
-  },
-  topButtonsMiddle: {
-    padding: 20,
-    borderBottomColor: "#ff8400",
-    borderBottomWidth: 2,
-    alignItems: 'center',
-    width: '33%',
+    width: '30%',
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: normalize(12),
     color: '#fff',
   }, 
 
