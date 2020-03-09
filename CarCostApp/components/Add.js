@@ -109,60 +109,52 @@ export default function Add() {
   return(
     <DistanceStore.Consumer>{(context) => {
       return (
-        <View>
+        <KeyboardAvoidingView enabled behavior="position" style={{padding: 0, marginBottom: 0}} keyboardVerticalOffset='15'>
           <View style={styles.content}>
             <Text style={styles.caption}>Tankovanie</Text>
             <Text style={styles.using}>Najazdené km:</Text>
-            <KeyboardAwareScrollView
-              contentContainerStyle={{ flexGlow: 1 }}
-              scrollEnabled={true}
-              enableOnAndroid={true}
-              extraHeight={100}
-              extraScrollHeight={100}
-            >
-              <TextInput
-                style={styles.usingInput}
-                defaultValue={`${kilom}`}
-                onChangeText={text => {
-                  setKilom(text)
-                  if(!isSet) {
-                    setKilomStart(text);
-                    }
+            <TextInput
+              style={styles.usingInput}
+              defaultValue={`${kilom}`}
+              onChangeText={text => {
+                setKilom(text)
+                if(!isSet) {
+                  setKilomStart(text);
                   }
                 }
-              />
-              { isSet &&
-                <View>
-                  <Text style={styles.using}>Natankované za (cena):</Text>
-                  <Picker
-                    selectedValue={refulPrice}
-                    style={styles.usingDropdown}
-                    onValueChange={(itemValue, itemIndex) =>
-                      {setRefulPrice(itemValue)}
-                    }>
-                    <Picker.Item label="0€" value='0' />
-                    <Picker.Item label="5€" value='5' />
-                    <Picker.Item label="10€" value="10" />
-                    <Picker.Item label="15€" value="15" />
-                    <Picker.Item label="20€" value="20" />
-                    <Picker.Item label="25€" value="25" />
-                    <Picker.Item label="30€" value="30" />
-                    <Picker.Item label="35€" value="35" />
-                    <Picker.Item label="40€" value="40" />
-                    <Picker.Item label="45€" value="45" />
-                    <Picker.Item label="50€" value="50" />
-                    <Picker.Item label="55€" value="55" />
-                    <Picker.Item label="60€" value="60" />
-                  </Picker>
-                  <Text style={styles.using}>Cena/liter:</Text>
-                  <TextInput
-                    style={styles.usingInput}
-                    defaultValue='1.'
-                    onChangeText={text => setPriceLiter(text)}
-                  />
-                </View>
               }
-            </KeyboardAwareScrollView>
+            />
+            { isSet &&
+              <View>
+                <Text style={styles.using}>Natankované za (cena):</Text>
+                <Picker
+                  selectedValue={refulPrice}
+                  style={styles.usingDropdown}
+                  onValueChange={(itemValue, itemIndex) =>
+                    {setRefulPrice(itemValue)}
+                  }>
+                  <Picker.Item label="0€" value='0' />
+                  <Picker.Item label="5€" value='5' />
+                  <Picker.Item label="10€" value="10" />
+                  <Picker.Item label="15€" value="15" />
+                  <Picker.Item label="20€" value="20" />
+                  <Picker.Item label="25€" value="25" />
+                  <Picker.Item label="30€" value="30" />
+                  <Picker.Item label="35€" value="35" />
+                  <Picker.Item label="40€" value="40" />
+                  <Picker.Item label="45€" value="45" />
+                  <Picker.Item label="50€" value="50" />
+                  <Picker.Item label="55€" value="55" />
+                  <Picker.Item label="60€" value="60" />
+                </Picker>
+                <Text style={styles.using}>Cena/liter:</Text>
+                <TextInput
+                  style={styles.usingInput}
+                  defaultValue='1.'
+                  onChangeText={text => setPriceLiter(text)}
+                />
+              </View>
+            }
           </View>
 
           <View style={styles.footer}>
@@ -181,7 +173,7 @@ export default function Add() {
               <Text style={styles.confirmButtonText}> Pridať záznam </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       )
     }}</DistanceStore.Consumer>
   );  

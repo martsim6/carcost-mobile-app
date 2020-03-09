@@ -29,6 +29,29 @@ export default function Show() {
           Zresetovaním vymažete všetky doterajšie záznamy a nebude možné sa k nim vrátiť!
         </Text>
       </View>
+      <View style={styles.languageSection}>
+        <Text style={styles.captionLanguage}> Jazyk </Text>
+        <View style={styles.selectButtons}>
+          <TouchableOpacity style={styles.languageButton}>
+            <Text style={styles.languageText}>
+              Slovenský
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.languageButton}>
+            <Text style={styles.languageText}>
+              Anglický
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.information}>
+        <Text style={styles.infoText}> Informácie o aplikácii </Text>
+        <View style={styles.selectButtons}>
+          <TouchableOpacity style={styles.infoButton}>
+            <Text style={styles.infoButtonText}> Info </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
 	);
 }
