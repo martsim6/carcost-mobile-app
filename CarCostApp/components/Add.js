@@ -34,6 +34,11 @@ export default function Add() {
 
   const date = moment(new Date()).format("MMMM");
 
+  const [warning, setWarning] = React.useState({
+    kilom: false,
+    priceLiter: false,
+  });
+
   React.useEffect(() => {
     checkAndSet();
   }, [kilomPassed, refulPrice, priceLiter, consumption]);
@@ -105,23 +110,35 @@ export default function Add() {
     storeData('sendData', getDataOut());
     storeData('saveData', getDataHere());
   }
+  const CheckValueIsNumberOrNot = (value) => {
+    if (isNaN(value)) {
+      alert('Wrong value!');
+    } else {
+      alert('It is a Number');
+    }
+  };
 
   return(
     <DistanceStore.Consumer>{(context) => {
       return (
-        <KeyboardAvoidingView enabled behavior="position" style={{padding: 0, marginBottom: 0}} keyboardVerticalOffset='15'>
+        <KeyboardAvoidingView enabled behavior="position" style={{padding: 0, marginBottom: 0}} keyboardVerticalOffset={15}>
           <View style={styles.content}>
             <Text style={styles.caption}>Tankovanie</Text>
             <Text style={styles.using}>Najazdené km:</Text>
             <TextInput
-              style={styles.usingInput}
+              style={warning["kilom"] ? styles.usingInputWarn : styles.usingInput}
               defaultValue={`${kilom}`}
               onChangeText={text => {
-                setKilom(text)
-                if(!isSet) {
-                  setKilomStart(text);
-                  }
-                }
+                if(isNaN(text)) {
+                  setWarning({kilom: true});
+                  alert("Zadaná hodnota je nesprávna! Prosím, zadajte iba číselné hodnoty");
+                } else {
+                  setWarning({kilom: false});
+                  setKilom(text)
+                  if(!isSet) {
+                    setKilomStart(text);
+                  } 
+                }}
               }
             />
             { isSet &&
@@ -149,9 +166,17 @@ export default function Add() {
                 </Picker>
                 <Text style={styles.using}>Cena/liter:</Text>
                 <TextInput
-                  style={styles.usingInput}
+                  style={warning["priceLiter"] ? styles.usingInputWarn : styles.usingInput}
                   defaultValue='1.'
-                  onChangeText={text => setPriceLiter(text)}
+                  onChangeText={text => {
+                    if(isNaN(text)) {
+                      setWarning({priceLiter: true});
+                      alert("Zadaná hodnota je nesprávna! Prosím, zadajte iba číselné hodnoty");
+                    } else {
+                      setWarning({priceLiter: false});
+                      setPriceLiter(text);
+                    }
+                  }}
                 />
               </View>
             }
@@ -160,13 +185,17 @@ export default function Add() {
           <View style={styles.footer}>
             <TouchableOpacity
               onPress={() => {
-                alert('Záznam bol pridaný');
-                if(!isSet) {
-                  storeData(`saveData`, getDataHere());
-                  checkAndSet();
+                if(!warning['kilom'] && !warning['priceLiter']){
+                  alert('Záznam bol pridaný');
+                  if(!isSet) {
+                    storeData(`saveData`, getDataHere());
+                    checkAndSet();
+                  } else {
+                    saveAll();
+                  }
                 } else {
-                  saveAll();
-                }
+                  console.log('Záznam nebolo možné pridať kvôli nesprávne zadaným hodnotám. Prosím, opravte hodnoty a skúste to znova.');
+                }                
               }}
               style={styles.confirmButton}
               >

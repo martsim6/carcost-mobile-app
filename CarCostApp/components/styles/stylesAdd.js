@@ -45,6 +45,16 @@ export default StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#f3f3f3',
   },
+  usingInputWarn: {
+    paddingLeft: 10,
+    height: 35,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: '60%',
+    borderRadius: 5,
+    marginTop: 10,
+    backgroundColor: 'orange',
+  },
   usingDropdown: {
     height: 35,
     paddingLeft: 10,

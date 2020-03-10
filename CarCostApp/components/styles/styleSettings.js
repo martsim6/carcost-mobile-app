@@ -22,9 +22,9 @@ export default StyleSheet.create({
   content: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 40,
   },
   confirmButton: {
-    marginTop: 40,
     padding: 12,
     borderRadius: 5,
     borderColor: "#ff8400",
@@ -37,23 +37,24 @@ export default StyleSheet.create({
     color: '#fff',
   },
   textField: {
-    marginTop: 40,
     justifyContent: 'center',
-    marginLeft: 20,
-    marginRight: 20,
   },
   text: {
     fontSize: normalize(14),
     color: '#fff',
     textAlign: 'center',
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
   },
-  languageSection: {
+  newSection: {
     flexDirection: "column",
+    justifyContent: 'center',
+    marginTop: 40,
   },
   captionLanguage: {
     fontSize: normalize(28),
     color: '#fff',
-    marginTop: 15,
     marginBottom: 25,
     textAlign: 'center',
   },
@@ -69,15 +70,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
     marginLeft: 20,
+    width: '38%',
   },
   languageText: {
     color: '#fff',
     fontSize: normalize(16),
-  },
-  information: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginTop: 20,
   },
   infoText: {
     color: '#fff',
@@ -95,5 +92,11 @@ export default StyleSheet.create({
   infoButtonText: {
     fontSize: normalize(18),
     color: '#fff',
-  }
+  },
+  icon: {
+    marginTop: 10,
+    width: normalize(36), 
+    height: normalize(36),
+    tintColor: "#ff8400",
+  },
 });
