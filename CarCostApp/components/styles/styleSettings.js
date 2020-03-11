@@ -22,7 +22,7 @@ export default StyleSheet.create({
   content: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40,
+    marginTop: normalize(40),
   },
   confirmButton: {
     padding: 12,
@@ -43,17 +43,17 @@ export default StyleSheet.create({
     fontSize: normalize(14),
     color: '#fff',
     textAlign: 'center',
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
+    marginTop: normalize(20),
+    marginLeft: normalize(20),
+    marginRight: normalize(20),
   },
   newSection: {
     flexDirection: "column",
     justifyContent: 'center',
-    marginTop: 40,
+    marginTop: normalize(40),
   },
   captionLanguage: {
-    fontSize: normalize(28),
+    fontSize: normalize(24),
     color: '#fff',
     marginBottom: 25,
     textAlign: 'center',
@@ -68,9 +68,9 @@ export default StyleSheet.create({
     borderColor: "#ff8400",
     borderWidth: 3,
     alignItems: 'center',
-    marginRight: 20,
-    marginLeft: 20,
-    width: '38%',
+    marginRight: normalize(20),
+    marginLeft: normalize(20),
+    width: '34%',
   },
   languageText: {
     color: '#fff',
@@ -80,6 +80,10 @@ export default StyleSheet.create({
     color: '#fff',
     fontSize: normalize(24),
   },
+  infoTextCon: {
+    color: '#ff8400',
+    fontSize: normalize(24),
+  },
   infoButton: {
     width: '40%',
     padding: 12,
@@ -87,14 +91,19 @@ export default StyleSheet.create({
     borderColor: "#ff8400",
     borderWidth: 3,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: normalize(20),
   },
   infoButtonText: {
     fontSize: normalize(18),
     color: '#fff',
   },
+  textContent: {
+    color: '#fff',
+    margin: normalize(12),
+    textAlign: 'center',
+  },
   icon: {
-    marginTop: 10,
+    marginTop: normalize(20),
     width: normalize(36), 
     height: normalize(36),
     tintColor: "#ff8400",

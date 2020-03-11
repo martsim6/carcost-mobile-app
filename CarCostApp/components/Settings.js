@@ -10,12 +10,13 @@ import styles from './styles/styleSettings';
 
 export default function Settings() {
   const [showInfo, setShowInfo] = React.useState(false);
+
   const clearAsyncStorage = async() => {
     AsyncStorage.clear();
   }
 	return(
     <View>
-      {!showInfo && 
+      {showInfo === false && 
         <View style={styles.content}>
           <TouchableOpacity
             onPress={() => {
@@ -62,18 +63,18 @@ export default function Settings() {
           </View>
         </View>
       }
-      {showInfo && 
+      {showInfo === true && 
         <View style={styles.content}>
-          <Text style={styles.infoText}> Informácie </Text>
-          <Text style={styles.text}>
-            <p>Táto aplikácia slúži na ukladanie údajov o tankovaní a najazdených kilometroch.</p>
-            <p>Najlepšie fungovanie aplikácie je zaručené len v prípade, že záznamy pridávate zakaždým,
-            ako zrealuzujete tankovanie.</p>
-            <p>Aktuálna spotreba je vypočítavaná na základe naposledy prejdených kilometrov a momentálne natankovanej ceny.</p>
-            Z týchto hodnôt však nie je možné zaručiť presnú spotrebu, tá je len orientačná.
-            <p>Najpresnejší výsledok spotreby dosiahnete jedine v prípade, že tankujete vždy na plnú nádrž.</p>
-            <p>V momentálnej verzii je možné používať aplikáciu (ukladať záznamy) len pre jedno auto.</p>
-          </Text>
+          <Text style={styles.infoTextCon}> Informácie </Text>
+          <View>
+            <Text style={styles.textContent}>Táto aplikácia slúži na ukladanie údajov o tankovaní a najazdených kilometroch.</Text>
+            <Text style={styles.textContent}>Najlepšie fungovanie aplikácie je zaručené len v prípade, že záznamy pridávate zakaždým,
+            ako zrealuzujete tankovanie.</Text>
+            <Text style={styles.textContent}>Aktuálna spotreba je vypočítavaná na základe naposledy prejdených kilometrov a momentálne natankovanej ceny.
+            Z týchto hodnôt však nie je možné zaručiť presnú spotrebu, tá je len orientačná.</Text>
+            <Text style={styles.textContent}>Najpresnejší výsledok spotreby dosiahnete jedine v prípade, že tankujete vždy na plnú nádrž.</Text>
+            <Text style={styles.textContent}>V momentálnej verzii je možné používať aplikáciu (ukladať záznamy) len pre jedno auto.</Text>
+          </View>
           <TouchableOpacity
             onPress={() => {
               setShowInfo(false)

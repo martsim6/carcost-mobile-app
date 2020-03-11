@@ -6,8 +6,7 @@ const {
   height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 
-// based on iphone 5s's scale
-const scale = SCREEN_WIDTH / 320;
+const scale = SCREEN_WIDTH / 310;
 
 export function normalize(size) {
   const newSize = size * scale 
@@ -25,12 +24,12 @@ export default StyleSheet.create({
   },
   statusbar: {
     backgroundColor: "#ff8400",
-    height: 20,
+    height: normalize(20),
     alignItems: 'center',
   },
   header: {
     backgroundColor: "#171717",
-    height: 50,
+    height: normalize(50),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -53,7 +52,6 @@ export default StyleSheet.create({
     borderRadius: 5,
     borderBottomColor: "#ff8400",
     borderBottomWidth: 2,
-    // alignItems: 'center',
     width: '30%',
   },
   buttonText: {
@@ -67,9 +65,7 @@ export default StyleSheet.create({
   icons: {
     width: normalize(16), 
     height: normalize(16),
-    marginLeft: 5,
+    marginLeft: normalize(5),
     tintColor: "#ff8400",
   },
-
-  // Main content
 });

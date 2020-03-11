@@ -11,7 +11,6 @@ import {
 import styles from './styles/stylesAdd';
 import moment from 'moment';
 import { DistanceStore } from './context/DistanceStore';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view-fix';
 
 export default function Add() {
   //new
@@ -121,7 +120,7 @@ export default function Add() {
   return(
     <DistanceStore.Consumer>{(context) => {
       return (
-        <KeyboardAvoidingView enabled behavior="position" style={{padding: 0, marginBottom: 0}} keyboardVerticalOffset={15}>
+        <View>
           <View style={styles.content}>
             <Text style={styles.caption}>Tankovanie</Text>
             <Text style={styles.using}>Najazdené km:</Text>
@@ -194,7 +193,7 @@ export default function Add() {
                     saveAll();
                   }
                 } else {
-                  console.log('Záznam nebolo možné pridať kvôli nesprávne zadaným hodnotám. Prosím, opravte hodnoty a skúste to znova.');
+                  alert('Záznam nebolo možné pridať kvôli nesprávne zadaným hodnotám. Prosím, opravte hodnoty a skúste to znova.');
                 }                
               }}
               style={styles.confirmButton}
@@ -202,7 +201,7 @@ export default function Add() {
               <Text style={styles.confirmButtonText}> Pridať záznam </Text>
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       )
     }}</DistanceStore.Consumer>
   );  

@@ -20,7 +20,7 @@ export function normalize(size) {
 
 export default StyleSheet.create({
 	contentShow: {
-    marginTop: 15,
+    marginTop: normalize(15),
   },
   chooseTabs: {
     justifyContent: 'space-around',
@@ -47,8 +47,8 @@ export default StyleSheet.create({
     color: '#ff8400',
   },
   content: {
-    marginLeft: 25,
-    marginTop: 25,
+    marginLeft: normalize(25),
+    marginTop: normalize(25),
     flexDirection: 'column',
     marginBottom: 12,
   },
@@ -56,17 +56,14 @@ export default StyleSheet.create({
     color: '#ff8400',
     fontSize: normalize(28),
     fontWeight: '400',
-    marginBottom: 40,
+    marginBottom: normalize(40),
   },
   caption: {
     color: "#fff",
     fontSize: normalize(20),
-    marginBottom: 50,
+    marginBottom: normalize(50),
   },
   data: {
-    color: '#ff8400',
-  },
-  confirmButtonText: {
     color: '#ff8400',
   },
 });
