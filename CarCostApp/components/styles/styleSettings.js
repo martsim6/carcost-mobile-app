@@ -9,7 +9,7 @@ const {
 // based on iphone 5s's scale
 const scale = SCREEN_WIDTH / 320;
 
-export function normalize(size) {
+function normalizeText(size) {
   const newSize = size * scale 
   if (Platform.OS === 'ios') {
     return Math.round(PixelRatio.roundToNearestPixel(newSize))
@@ -19,43 +19,47 @@ export function normalize(size) {
 }
 
 export default StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+  },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: normalize(40),
+    marginTop: SCREEN_HEIGHT * 0.05,
   },
   confirmButton: {
-    padding: 12,
+    width: '30%',
+    padding: SCREEN_WIDTH * 0.03,
     borderRadius: 5,
     borderColor: "#ff8400",
     borderWidth: 3,
     alignItems: 'center',
-    width: '30%',
   },
   buttonText: {
-    fontSize: normalize(20),
+    fontSize: normalizeText(20),
     color: '#fff',
   },
   textField: {
     justifyContent: 'center',
   },
   text: {
-    fontSize: normalize(14),
+    fontSize: normalizeText(14),
     color: '#fff',
     textAlign: 'center',
-    marginTop: normalize(20),
-    marginLeft: normalize(20),
-    marginRight: normalize(20),
+    marginTop: SCREEN_HEIGHT * 0.03,
+    marginLeft: SCREEN_WIDTH * 0.03,
+    marginRight: SCREEN_WIDTH * 0.03,
   },
   newSection: {
     flexDirection: "column",
     justifyContent: 'center',
-    marginTop: normalize(40),
+    marginTop: SCREEN_HEIGHT * 0.08,
   },
   captionLanguage: {
-    fontSize: normalize(24),
+    fontSize: normalizeText(24),
     color: '#fff',
-    marginBottom: 25,
+    marginBottom: SCREEN_HEIGHT * 0.03,
     textAlign: 'center',
   },
   selectButtons: {
@@ -63,49 +67,49 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
   },
   languageButton: {
-    padding: 12,
+    width: '34%',
+    marginRight: SCREEN_WIDTH * 0.05,
+    marginLeft: SCREEN_WIDTH * 0.05,
+    padding: SCREEN_WIDTH * 0.03,
     borderRadius: 5,
     borderColor: "#ff8400",
     borderWidth: 3,
     alignItems: 'center',
-    marginRight: normalize(20),
-    marginLeft: normalize(20),
-    width: '34%',
   },
   languageText: {
     color: '#fff',
-    fontSize: normalize(16),
+    fontSize: normalizeText(16),
   },
   infoText: {
     color: '#fff',
-    fontSize: normalize(24),
+    fontSize: normalizeText(24),
   },
   infoTextCon: {
     color: '#ff8400',
-    fontSize: normalize(24),
+    fontSize: normalizeText(24),
   },
   infoButton: {
     width: '40%',
-    padding: 12,
+    padding: SCREEN_WIDTH * 0.03,
     borderRadius: 5,
     borderColor: "#ff8400",
     borderWidth: 3,
     alignItems: 'center',
-    marginTop: normalize(20),
+    marginTop: SCREEN_HEIGHT * 0.03,
   },
   infoButtonText: {
-    fontSize: normalize(18),
+    fontSize: normalizeText(18),
     color: '#fff',
   },
   textContent: {
     color: '#fff',
-    margin: normalize(12),
+    margin: SCREEN_WIDTH * 0.03,
     textAlign: 'center',
   },
   icon: {
-    marginTop: normalize(20),
-    width: normalize(36), 
-    height: normalize(36),
+    marginTop: SCREEN_HEIGHT * 0.04,
+    width: SCREEN_WIDTH * 0.1, 
+    height: SCREEN_HEIGHT * 0.06,
     tintColor: "#ff8400",
   },
 });

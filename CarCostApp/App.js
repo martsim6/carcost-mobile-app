@@ -26,8 +26,7 @@ export default function App() {
   return (
     <DistanceStore>
       <View style={styles.container}>
-        <View style={styles.statusbar}>
-        </View>
+        <View style={styles.statusbar}></View>
       	<View style={styles.header}>
           <Text style={styles.title}> Car Cost </Text>
         </View>
@@ -78,7 +77,7 @@ export default function App() {
             </View>
           </TouchableOpacity>
         </View>
-        <RenderContent loadPage={slide} />
+        <RenderContent loadPage={slide} style={styles.content} />
       </View>
     </DistanceStore>
   );

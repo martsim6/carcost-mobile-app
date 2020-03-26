@@ -120,7 +120,7 @@ export default function Add() {
   return(
     <DistanceStore.Consumer>{(context) => {
       return (
-        <View>
+        <View style={styles.container}>
           <View style={styles.content}>
             <Text style={styles.caption}>Tankovanie</Text>
             <Text style={styles.using}>Najazdené km:</Text>

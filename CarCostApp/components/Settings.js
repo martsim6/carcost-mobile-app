@@ -15,7 +15,7 @@ export default function Settings() {
     AsyncStorage.clear();
   }
 	return(
-    <View>
+    <View style={styles.container}>
       {showInfo === false && 
         <View style={styles.content}>
           <TouchableOpacity
