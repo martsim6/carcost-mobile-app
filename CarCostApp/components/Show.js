@@ -11,13 +11,13 @@ import { DistanceStore } from './context/DistanceStore';
 
 export default function Show(props) {
   const [showTab, setShowTab] = React.useState([]);
-  const [consumption, setConsum] = React.useState();
-  const [kilomPassed, setKilomPassed] = React.useState();
-  const [refulPrice, setRefulPrice] = React.useState();
-  const [kmTraveled, setKmTraveled] = React.useState();
-  const [spentMoney, setSpentMoney] = React.useState();
-  const [moneyPerMonth, setMoneyPerMonth] = React.useState();
-  const [kmPerMonth, setKmPerMonth] = React.useState();
+  const [consumption, setConsum] = React.useState(0);
+  const [kilomPassed, setKilomPassed] = React.useState(0);
+  const [refulPrice, setRefulPrice] = React.useState(0);
+  const [kmTraveled, setKmTraveled] = React.useState(0);
+  const [spentMoney, setSpentMoney] = React.useState(0);
+  const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
+  const [kmPerMonth, setKmPerMonth] = React.useState(0);
 
   const date = moment(new Date()).format("MMMM");
 

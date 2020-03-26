@@ -20,7 +20,7 @@ export function normalize(size) {
 
 export default StyleSheet.create({
 	contentShow: {
-    marginTop: 15,
+    marginTop: SCREEN_HEIGHT * 0.025,
   },
   chooseTabs: {
     justifyContent: 'space-around',
@@ -28,17 +28,17 @@ export default StyleSheet.create({
     flexDirection: 'row',
   },
   chooseButtons: {
-    alignItems: 'center',
     width: '25%',
-    padding: 10,
+    padding: SCREEN_WIDTH * 0.03,
+    alignItems: 'center',
     borderColor: 'gray',
     borderBottomWidth: 2,
     borderRadius: 5,
   },
   chooseButtonsSelected: {
-    alignItems: 'center',
     width: '25%',
-    padding: 10,
+    padding: SCREEN_WIDTH * 0.03,
+    alignItems: 'center',
     borderColor: 'green',
     borderBottomWidth: 2,
     borderRadius: 5,
@@ -47,26 +47,22 @@ export default StyleSheet.create({
     color: '#ff8400',
   },
   content: {
-    marginLeft: 25,
-    marginTop: 25,
+    marginLeft: SCREEN_WIDTH * 0.057,
+    marginTop: SCREEN_HEIGHT * 0.04,
     flexDirection: 'column',
-    marginBottom: 12,
   },
   contentCaption: {
     color: '#ff8400',
     fontSize: normalize(28),
     fontWeight: '400',
-    marginBottom: 40,
+    marginBottom: SCREEN_HEIGHT * 0.05,
   },
   caption: {
     color: "#fff",
     fontSize: normalize(20),
-    marginBottom: 50,
+    marginBottom: SCREEN_HEIGHT * 0.08,
   },
   data: {
-    color: '#ff8400',
-  },
-  confirmButtonText: {
     color: '#ff8400',
   },
 });

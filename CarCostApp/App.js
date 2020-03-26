@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, AsyncStorage, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TouchableOpacity, AsyncStorage, KeyboardAvoidingView, Image } from 'react-native';
 import styles from './components/styles/styles';
 import Add from './components/Add';
 import Show from './components/Show';
@@ -26,8 +26,7 @@ export default function App() {
   return (
     <DistanceStore>
       <View style={styles.container}>
-        <View style={styles.statusbar}>
-        </View>
+        <View style={styles.statusbar}></View>
       	<View style={styles.header}>
           <Text style={styles.title}> Car Cost </Text>
         </View>
@@ -39,7 +38,14 @@ export default function App() {
             }
             style={styles.topButtons}
           >
-            <Text style={styles.buttonText}>Pridať</Text>
+            <View style={styles.buttonContent}>
+              <Text style={styles.buttonText}>Pridať</Text>
+              <Image
+                source={require('./assets/images/fuel.png')}
+                fadeDuration={0}
+                style={styles.icons}
+              />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -48,16 +54,30 @@ export default function App() {
             }
             style={styles.topButtons}
           >
-            <Text style={styles.buttonText}>Pozrieť</Text>
+            <View style={styles.buttonContent}>
+              <Text style={styles.buttonText}>Pozrieť</Text>
+              <Image
+                source={require('./assets/images/watch.png')}
+                fadeDuration={0}
+                style={styles.icons}
+              />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setSlide('settings')}
             style={styles.topButtons}
           >
-            <Text style={styles.buttonText}>Nastavenia</Text>
+            <View style={styles.buttonContent}>
+              <Text style={styles.buttonText}>Nastavenia</Text>
+              <Image
+                source={require('./assets/images/settings.png')}
+                fadeDuration={0}
+                style={styles.icons}
+              />
+            </View>
           </TouchableOpacity>
         </View>
-        <RenderContent loadPage={slide} />
+        <RenderContent loadPage={slide} style={styles.content} />
       </View>
     </DistanceStore>
   );

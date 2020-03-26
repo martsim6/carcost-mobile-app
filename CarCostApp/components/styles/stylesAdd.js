@@ -19,40 +19,54 @@ export function normalize(size) {
 }
 
 export default StyleSheet.create({
+  container:{
+    height: '100%',
+    width: '100%'
+  },
 	content: {
-    marginLeft: 25,
-    marginTop: 25,
+    marginLeft: SCREEN_WIDTH * 0.08,
+    marginTop: SCREEN_HEIGHT * 0.04,
   },
   caption: {
     color: "#fff",
     fontSize: normalize(25),
-    marginBottom: 10,
+    marginBottom: SCREEN_HEIGHT * 0.015,
     alignItems: 'center',
     justifyContent: 'center',
   },
   using: {
     color: '#fff',
     fontSize: normalize(15),
-    marginTop: 25,
+    marginTop: SCREEN_HEIGHT * 0.04,
   },
   usingInput: {
-    paddingLeft: 10,
-    height: 35,
+    height: SCREEN_WIDTH * 0.11,
+    width: '60%',
+    paddingLeft: SCREEN_WIDTH * 0.025,
+    marginTop: SCREEN_HEIGHT * 0.01,
     borderColor: 'gray',
     borderWidth: 1,
-    width: '60%',
     borderRadius: 5,
-    marginTop: 10,
     backgroundColor: '#f3f3f3',
   },
+  usingInputWarn: {
+    height: SCREEN_WIDTH * 0.11,
+    width: '60%',
+    paddingLeft: SCREEN_WIDTH * 0.025,
+    marginTop: SCREEN_HEIGHT * 0.01,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: 'orange',
+  },
   usingDropdown: {
-    height: 35,
-    paddingLeft: 10,
+    height: SCREEN_WIDTH * 0.11,
+    width: '60%',
+    paddingLeft: SCREEN_WIDTH * 0.025,
+    marginTop: SCREEN_HEIGHT * 0.01,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 10,
-    width: '60%',
-    marginTop: 10,
     backgroundColor: '#f3f3f3',
   },
 
@@ -65,15 +79,14 @@ export default StyleSheet.create({
   },
   confirmButton: {
     width: '40%',
+    padding: SCREEN_WIDTH * 0.045,
+    marginTop: SCREEN_HEIGHT * 0.07,
     borderRadius: 10,
     borderColor: '#ff8400',
     borderWidth: 2,
-    padding: 14,
     alignItems: 'center',
-    marginTop: 55,
   },
   confirmButtonText: {
     color: '#ff8400',
   },
-	
 });
