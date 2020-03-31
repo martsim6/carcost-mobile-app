@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import styles from './styles/stylesAdd';
 import moment from 'moment';
-import { DistanceStore } from './context/DistanceStore';
 
 export default function Add() {
   //new
@@ -29,8 +28,6 @@ export default function Add() {
   const [moneyPerMonth, setMoneyPerMonth] = React.useState(0);
   const [consumption, setConsum] = React.useState(0);
 
-  const [loading, setLoading] = React.useState(true);
-
   const date = moment(new Date()).format("MMMM");
 
   const [warning, setWarning] = React.useState({
@@ -40,22 +37,19 @@ export default function Add() {
 
   React.useEffect(() => {
     checkAndSet();
-  }, [kilomPassed, refulPrice, priceLiter, consumption]);
+  }, [kilom, kilomPassed, refulPrice, priceLiter, consumption]);
 
   const checkAndSet = async () => {
     try{
       await AsyncStorage.getItem('saveData', (err, result) => {
-        if(!result){
-          setKilom(0);
-        } else {
+        if(result){
           setIsSet(true);
           var res = JSON.parse(result);
           setKilomStart(res.kilometers_start);
           setKilomLast(res.kilometers_new);
           setKmTraveled(parseInt(kilom) - parseInt(kilomStart));
           setKilomPassed(parseInt(kmTraveled - res.kilometers_traveled));
-
-          const volume = parseFloat(refulPrice/priceLiter);
+          const volume = parseFloat(res.refulPrice/res.literPrice);
           setConsum(parseFloat((volume*100)/parseInt(kmTraveled - res.kilometers_traveled)).toFixed(2));
           setSpentMoney(parseInt(res.spentMoney) + parseInt(refulPrice));
 
@@ -67,6 +61,7 @@ export default function Add() {
             setKmPerMonth(parseInt(kmTraveled - res.kilometers_traveled));
           }
         }
+        // console.log(`consum: ${consumption}, kampas: ${kilomPassed}, price: ${refulPrice}, spentMon: ${spentMoney}`)
       });
     } catch(err) {
       console.log(err);
@@ -89,6 +84,7 @@ export default function Add() {
     var data = {
       kilometers_new: kilom,
       literPrice: priceLiter,
+      refulPrice: refulPrice,
       kilometers_start: kilomStart,
       kilometers_traveled: parseInt(kilom - kilomStart),
       spentMoney: spentMoney,
@@ -106,6 +102,7 @@ export default function Add() {
     }
   }
   function saveAll() {
+    console.log(getDataOut())
     storeData('sendData', getDataOut());
     storeData('saveData', getDataHere());
   }
@@ -118,91 +115,83 @@ export default function Add() {
   };
 
   return(
-    <DistanceStore.Consumer>{(context) => {
-      return (
-        <View style={styles.container}>
-          <View style={styles.content}>
-            <Text style={styles.caption}>Tankovanie</Text>
-            <Text style={styles.using}>Najazdené km:</Text>
-            <TextInput
-              style={warning["kilom"] ? styles.usingInputWarn : styles.usingInput}
-              defaultValue={`${kilom}`}
-              onChangeText={text => {
-                if(isNaN(text)) {
-                  setWarning({kilom: true});
-                  alert("Zadaná hodnota je nesprávna! Prosím, zadajte iba číselné hodnoty");
-                } else {
-                  setWarning({kilom: false});
-                  setKilom(text)
-                  if(!isSet) {
-                    setKilomStart(text);
-                  } 
-                }}
-              }
-            />
-            { isSet &&
-              <View>
-                <Text style={styles.using}>Natankované za (cena):</Text>
-                <Picker
-                  selectedValue={refulPrice}
-                  style={styles.usingDropdown}
-                  onValueChange={(itemValue, itemIndex) =>
-                    {setRefulPrice(itemValue)}
-                  }>
-                  <Picker.Item label="0€" value='0' />
-                  <Picker.Item label="5€" value='5' />
-                  <Picker.Item label="10€" value="10" />
-                  <Picker.Item label="15€" value="15" />
-                  <Picker.Item label="20€" value="20" />
-                  <Picker.Item label="25€" value="25" />
-                  <Picker.Item label="30€" value="30" />
-                  <Picker.Item label="35€" value="35" />
-                  <Picker.Item label="40€" value="40" />
-                  <Picker.Item label="45€" value="45" />
-                  <Picker.Item label="50€" value="50" />
-                  <Picker.Item label="55€" value="55" />
-                  <Picker.Item label="60€" value="60" />
-                </Picker>
-                <Text style={styles.using}>Cena/liter:</Text>
-                <TextInput
-                  style={warning["priceLiter"] ? styles.usingInputWarn : styles.usingInput}
-                  defaultValue='1.'
-                  onChangeText={text => {
-                    if(isNaN(text)) {
-                      setWarning({priceLiter: true});
-                      alert("Zadaná hodnota je nesprávna! Prosím, zadajte iba číselné hodnoty");
-                    } else {
-                      setWarning({priceLiter: false});
-                      setPriceLiter(text);
-                    }
-                  }}
-                />
-              </View>
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.caption}>Tankovanie</Text>
+        <Text style={styles.using}>Najazdené km:</Text>
+        <TextInput
+          style={warning["kilom"] ? styles.usingInputWarn : styles.usingInput}
+          defaultValue={`${kilom}`}
+          onChangeText={text => {
+            if(isNaN(text)) {
+              setWarning({kilom: true});
+              alert("Zadaná hodnota je nesprávna! Prosím, zadajte iba číselné hodnoty");
+            } else {
+              setWarning({kilom: false});
+              setKilom(text)
+              if(!isSet) {
+                setKilomStart(text);
+              } 
+            }}
+          }
+        />
+        <Text style={styles.using}>Natankované za (cena):</Text>
+        <Picker
+          selectedValue={refulPrice}
+          style={styles.usingDropdown}
+          onValueChange={(itemValue, itemIndex) =>
+            {setRefulPrice(itemValue)}
+          }>
+          <Picker.Item label="0€" value='0' />
+          <Picker.Item label="5€" value='5' />
+          <Picker.Item label="10€" value="10" />
+          <Picker.Item label="15€" value="15" />
+          <Picker.Item label="20€" value="20" />
+          <Picker.Item label="25€" value="25" />
+          <Picker.Item label="30€" value="30" />
+          <Picker.Item label="35€" value="35" />
+          <Picker.Item label="40€" value="40" />
+          <Picker.Item label="45€" value="45" />
+          <Picker.Item label="50€" value="50" />
+          <Picker.Item label="55€" value="55" />
+          <Picker.Item label="60€" value="60" />
+        </Picker>
+        <Text style={styles.using}>Cena/liter:</Text>
+        <TextInput
+          style={warning["priceLiter"] ? styles.usingInputWarn : styles.usingInput}
+          defaultValue='1.'
+          onChangeText={text => {
+            if(isNaN(text)) {
+              setWarning({priceLiter: true});
+              alert("Zadaná hodnota je nesprávna! Prosím, zadajte iba číselné hodnoty");
+            } else {
+              setWarning({priceLiter: false});
+              setPriceLiter(text);
             }
-          </View>
+          }}
+        />
+      </View>
 
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                if(!warning['kilom'] && !warning['priceLiter']){
-                  alert('Záznam bol pridaný');
-                  if(!isSet) {
-                    storeData(`saveData`, getDataHere());
-                    checkAndSet();
-                  } else {
-                    saveAll();
-                  }
-                } else {
-                  alert('Záznam nebolo možné pridať kvôli nesprávne zadaným hodnotám. Prosím, opravte hodnoty a skúste to znova.');
-                }                
-              }}
-              style={styles.confirmButton}
-              >
-              <Text style={styles.confirmButtonText}> Pridať záznam </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    }}</DistanceStore.Consumer>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          onPress={() => {
+            if(!warning['kilom'] && !warning['priceLiter']){
+              alert('Záznam bol pridaný');
+              if(!isSet) {
+                storeData(`saveData`, getDataHere());
+                checkAndSet();
+              } else {
+                saveAll();
+              }
+            } else {
+              alert('Záznam nebolo možné pridať kvôli nesprávne zadaným hodnotám. Prosím, opravte hodnoty a skúste to znova.');
+            }                
+          }}
+          style={styles.confirmButton}
+          >
+          <Text style={styles.confirmButtonText}> Pridať záznam </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );  
 }
