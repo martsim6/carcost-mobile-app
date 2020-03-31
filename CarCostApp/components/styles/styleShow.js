@@ -19,9 +19,11 @@ export function normalize(size) {
 }
 
 export default StyleSheet.create({
+  // Main screen
 	contentShow: {
     marginTop: SCREEN_HEIGHT * 0.025,
   },
+  // Top tabs buttons
   chooseTabs: {
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -46,6 +48,7 @@ export default StyleSheet.create({
   chooseButtonText: {
     color: '#ff8400',
   },
+  // Content
   content: {
     marginLeft: SCREEN_WIDTH * 0.057,
     marginTop: SCREEN_HEIGHT * 0.04,

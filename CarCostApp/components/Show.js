@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import styles from './styles/styleShow';
 import moment from 'moment';
-import { DistanceStore } from './context/DistanceStore';
 
 export default function Show(props) {
+  // state variables
   const [showTab, setShowTab] = React.useState([]);
   const [consumption, setConsum] = React.useState(0);
   const [kilomPassed, setKilomPassed] = React.useState(0);
@@ -20,14 +20,14 @@ export default function Show(props) {
   const [kmPerMonth, setKmPerMonth] = React.useState(0);
 
   const date = moment(new Date()).format("MMMM");
-
+  // On visit, load all needed data
   React.useEffect(() => {
     setNeededData();
   }, [setNeededData, consumption, kilomPassed, kmTraveled, spentMoney]);
 
   const setNeededData = () => {
     try {
-      // Set actual data
+      // Set data taken from input (Add page)
       AsyncStorage.getItem('sendData', (err, result) => {
         if(result){
           var res = JSON.parse(result);
@@ -45,68 +45,64 @@ export default function Show(props) {
     }
   };
 
-	return(
-    <DistanceStore.Consumer>{(context) => {
-      return(
-        <View>
-          <View style={styles.contentShow}>
-            <View style={styles.chooseTabs}>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowTab('current');
-                }
-              }
-              style={showTab == 'current' ? styles.chooseButtonsSelected : styles.chooseButtons}
-              >
-                <Text style={styles.chooseButtonText}> Aktuálne </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowTab('month');
-                }
-              }
-              style={showTab == 'month' ? styles.chooseButtonsSelected : styles.chooseButtons}
-              >
-                <Text style={styles.chooseButtonText}> Za mesiac </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowTab('all');
-                }
-              }
-              style={showTab == 'all' ? styles.chooseButtonsSelected : styles.chooseButtons}
-              >
-                <Text style={styles.chooseButtonText}>Celkovo</Text>
-              </TouchableOpacity>
-            </View>
-            { 
-              showTab == 'current' &&
-              <View style={styles.content}>
-                <Text style={styles.contentCaption}> Aktuálne </Text>
-                <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/100km</Text></Text>
-                <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{kilomPassed} km</Text> </Text>
-                <Text style={styles.caption}>Naposledy zaplatený benzín: <Text style={styles.data}>{refulPrice} €</Text></Text>
-              </View>
+  return(
+    <View>
+      <View style={styles.contentShow}>
+        <View style={styles.chooseTabs}>
+          <TouchableOpacity
+            onPress={() => {
+              setShowTab('current');
             }
-            {
-              showTab == 'month' &&
-              <View style={styles.content}>
-                <Text style={styles.contentCaption}> Za mesiac {date} </Text>
-                <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmPerMonth} km</Text> </Text>
-                <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{moneyPerMonth} €</Text></Text>
-              </View>
+          }
+          style={showTab === 'current' ? styles.chooseButtonsSelected : styles.chooseButtons}
+          >
+            <Text style={styles.chooseButtonText}> Aktuálne </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setShowTab('month');
             }
-            {
-              showTab == 'all' && 
-              <View style={styles.content}>
-                <Text style={styles.contentCaption}> Celkovo </Text>
-                <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmTraveled} km</Text> </Text>
-                <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{spentMoney} €</Text></Text>
-              </View>
+          }
+          style={showTab === 'month' ? styles.chooseButtonsSelected : styles.chooseButtons}
+          >
+            <Text style={styles.chooseButtonText}> Za mesiac </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setShowTab('all');
             }
-          </View>
+          }
+          style={showTab === 'all' ? styles.chooseButtonsSelected : styles.chooseButtons}
+          >
+            <Text style={styles.chooseButtonText}>Celkovo</Text>
+          </TouchableOpacity>
         </View>
-      )
-    }}</DistanceStore.Consumer>
-	);
+        { 
+          showTab === 'current' &&
+          <View style={styles.content}>
+            <Text style={styles.contentCaption}> Aktuálne </Text>
+            <Text style={styles.caption}>Spotreba: <Text style={styles.data}>{consumption} l/100km</Text></Text>
+            <Text style={styles.caption}>Naposledy prejdené kilometre: <Text style={styles.data}>{kilomPassed} km</Text> </Text>
+            <Text style={styles.caption}>Naposledy zaplatený benzín: <Text style={styles.data}>{refulPrice} €</Text></Text>
+          </View>
+        }
+        {
+          showTab === 'month' &&
+          <View style={styles.content}>
+            <Text style={styles.contentCaption}> Za mesiac {date} </Text>
+            <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmPerMonth} km</Text> </Text>
+            <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{moneyPerMonth} €</Text></Text>
+          </View>
+        }
+        {
+          showTab === 'all' && 
+          <View style={styles.content}>
+            <Text style={styles.contentCaption}> Celkovo </Text>
+            <Text style={styles.caption}>Najazdené kilometre: <Text style={styles.data}>{kmTraveled} km</Text> </Text>
+            <Text style={styles.caption}>Zaplatený benzín: <Text style={styles.data}>{spentMoney} €</Text></Text>
+          </View>
+        }
+      </View>
+    </View>
+  )
 }
