@@ -19,97 +19,86 @@ function normalizeText(size) {
 }
 
 export default StyleSheet.create({
+  // Whole section
   container: {
     width: '100%',
     height: '100%',
+    marginTop: SCREEN_HEIGHT * 0.025,
   },
-  content: {
+  // Top tabs
+  chooseTabs: {
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: SCREEN_HEIGHT * 0.05,
+    flexDirection: 'row',
   },
-  confirmButton: {
+  chooseButtons: {
+    width: '25%',
+    padding: SCREEN_WIDTH * 0.03,
+    alignItems: 'center',
+    borderColor: 'gray',
+    borderBottomWidth: 2,
+    borderRadius: 5,
+  },
+  chooseButtonsSelected: {
+    width: '25%',
+    padding: SCREEN_WIDTH * 0.03,
+    alignItems: 'center',
+    borderColor: 'green',
+    borderBottomWidth: 2,
+    borderRadius: 5,
+  },
+  chooseButtonText: {
+    color: '#ff8400',
+  },
+  // Content section
+  content: {
+    marginTop: SCREEN_HEIGHT * 0.02,
+  },
+  // Buttons
+  resetButton: {
     width: '30%',
+    marginTop: SCREEN_HEIGHT * 0.2,
+    padding: SCREEN_WIDTH * 0.03,
+    borderRadius: 5,
+    borderColor: "#ff8400",
+    borderWidth: 3,
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  languageButton: {
+    width: '34%',
+    marginTop: SCREEN_HEIGHT * 0.2,
     padding: SCREEN_WIDTH * 0.03,
     borderRadius: 5,
     borderColor: "#ff8400",
     borderWidth: 3,
     alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: normalizeText(20),
-    color: '#fff',
-  },
-  textField: {
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: normalizeText(14),
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: SCREEN_HEIGHT * 0.03,
-    marginLeft: SCREEN_WIDTH * 0.03,
-    marginRight: SCREEN_WIDTH * 0.03,
-  },
-  newSection: {
-    flexDirection: "column",
-    justifyContent: 'center',
-    marginTop: SCREEN_HEIGHT * 0.08,
-  },
-  captionLanguage: {
-    fontSize: normalizeText(24),
-    color: '#fff',
-    marginBottom: SCREEN_HEIGHT * 0.03,
-    textAlign: 'center',
   },
   selectButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  languageButton: {
-    width: '34%',
-    marginRight: SCREEN_WIDTH * 0.05,
-    marginLeft: SCREEN_WIDTH * 0.05,
-    padding: SCREEN_WIDTH * 0.03,
-    borderRadius: 5,
-    borderColor: "#ff8400",
-    borderWidth: 3,
-    alignItems: 'center',
-  },
-  languageText: {
+  // Text
+  buttonText: {
+    fontSize: normalizeText(20),
     color: '#fff',
-    fontSize: normalizeText(16),
-  },
-  infoText: {
-    color: '#fff',
-    fontSize: normalizeText(24),
   },
   infoTextCon: {
+    alignSelf: 'center',
     color: '#ff8400',
     fontSize: normalizeText(24),
   },
-  infoButton: {
-    width: '40%',
-    padding: SCREEN_WIDTH * 0.03,
-    borderRadius: 5,
-    borderColor: "#ff8400",
-    borderWidth: 3,
-    alignItems: 'center',
-    marginTop: SCREEN_HEIGHT * 0.03,
-  },
-  infoButtonText: {
-    fontSize: normalizeText(18),
-    color: '#fff',
-  },
   textContent: {
-    color: '#fff',
     margin: SCREEN_WIDTH * 0.03,
     textAlign: 'center',
+    color: '#fff',
+    fontSize: normalizeText(13),
   },
-  icon: {
-    marginTop: SCREEN_HEIGHT * 0.04,
-    width: SCREEN_WIDTH * 0.1, 
-    height: SCREEN_HEIGHT * 0.06,
-    tintColor: "#ff8400",
+  textContentStrong: {
+    margin: SCREEN_WIDTH * 0.03,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: normalizeText(15),
   },
 });

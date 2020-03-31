@@ -86,7 +86,19 @@ export default StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
   },
+  confirmButtonDenied: {
+    width: '40%',
+    padding: SCREEN_WIDTH * 0.045,
+    marginTop: SCREEN_HEIGHT * 0.07,
+    borderRadius: 10,
+    borderColor: '#878787',
+    borderWidth: 2,
+    alignItems: 'center',
+  },
   confirmButtonText: {
     color: '#ff8400',
+  },
+  confirmButtonTextDenied: {
+    color: '#999999',
   },
 });
