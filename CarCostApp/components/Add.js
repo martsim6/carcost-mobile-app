@@ -42,6 +42,23 @@ export default function Add() {
   React.useEffect(() => {
     checkAndSet();
   }, [kilom, kilomPassed, refulPrice, priceLiter, consumption]);
+
+  React.useEffect(() => {
+    setOldKilom()
+  }, []);
+
+  const setOldKilom = async () => {
+    try {
+      await AsyncStorage.getItem('saveData', (err, result) => {
+        if(result) {
+          const res = JSON.parse(result);
+          setKilom(res.kilometers_new);
+        }
+      });
+    } catch(err) {
+      console.log(err);
+    }
+  }
   // Main function for calculating all values
   const checkAndSet = async () => {
     // try to get saved data, if pass, calculate and set values (some from past values = res, some from now given values)
@@ -210,16 +227,24 @@ export default function Add() {
       <View style={styles.footer}>
         <TouchableOpacity
           onPress={() => {
+            // if there is not filled all needed inputs, dont allow to add record
             if(!isSet.showButton){
               alert("Záznam nie je možné pridať. Prosím, vyplňte všetky potrebné údaje!")
+            // new set mileage is lower, then last recorded mileage, dont add record
+            } else if(kilomLast && kilom < kilomLast ){
+              alert("Zadane najazdene kilometre maju mensiu hodnotu, ako predchadzajuci zaznam. Opravte najazdene kilometre a skuste to znova.");
+              // all goes OK, add record
             } else if(!warning['kilom'] && !warning['priceLiter']){
               alert('Záznam bol pridaný');
+              // if its first record, dont save data for sending (not able to calculate it yet)
               if(!isSet.initial) {
                 storeData(`saveData`, getDataHere());
                 checkAndSet();
+              // save data here and out (send data output)
               } else {
                 saveAll();
               }
+            // there is wrong value in input/s, throw alert, dont add record
             } else {
               alert('Záznam nebolo možné pridať kvôli nesprávne zadaným hodnotám. Prosím, opravte hodnoty a skúste to znova.');
             }                
